@@ -56,7 +56,8 @@ while running:
         # Drop a new chip on mouse click
         if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
-            chips.append(create_chip(space, x, y))
+            for i in range(10):
+                chips.append(create_chip(space, x,y))
 
     # 2. Physics Step
     # Using 1/60 for a stable 60 FPS simulation
