@@ -1,18 +1,11 @@
 #Pseudocode for dice
 
-#function for placing bets
-    #while not over
-        #display enter bet but can't be lower than 1 or higher than your total amount
-        #user enter bet amount
-        #if bet is larger than total
-            #display user can't bet because alowance is too high
-            #restart loop
-        #else if bet is lower than 1
-            #display must enter something higher than 1
-            #restart loop
-        #else
-            #move onto the next function
+#function for entering bet amount
+    #display how much money do you want to place bets
+    #user is brought to the slider screan
+    #user may change the bet amount or the slider amount or just run the game
 
-#function for running game
-    #while not over
-        #user choose to move the multiplier.
+#function for winning the game
+    #if the user won the game
+    #amount is multiplied by the slider amount
+    #if the user lost the game
