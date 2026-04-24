@@ -17,7 +17,8 @@ Just do not monetize it.
 ***
 ## Contributors
 BG2bg2bg2
-Chronin7
-Yourinthemood
 
+Chronin7
+
+Stubbed-My-Toe
 ***

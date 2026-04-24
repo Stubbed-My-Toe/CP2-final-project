@@ -7,5 +7,6 @@
 
 #function for winning the game
     #if the user won the game
-    #amount is multiplied by the slider amount
+        #amount is multiplied by the slider amount
     #if the user lost the game
+        #amount is not returned
