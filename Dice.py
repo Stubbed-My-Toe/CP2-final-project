@@ -1,8 +1,10 @@
 #Pseudocode for dice
 
+#from slots bring in all
+
 #function for entering bet amount
     #display how much money do you want to place bets
-    #user is brought to the slider screan
+    #user is brought to the slider screen.
     #user may change the bet amount or the slider amount or just run the game
 
 #function for winning the game
