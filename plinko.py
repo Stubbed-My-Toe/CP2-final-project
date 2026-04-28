@@ -25,3 +25,5 @@
 #if the user clicked raise bet raise the bet
 # if the user clicked the text box then alow the user to change what is in it
 # if the uesr clicks drop chip then:
+# simulate the chip untill it hits a score thing
+# add the score*bet to amount of cash
