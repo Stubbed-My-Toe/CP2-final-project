@@ -29,7 +29,7 @@ while running:
             if button_rect.collidepoint(mouse_pos):
                 print("Start Game Clicked!")
                 from slider_screen import *
-                slider_screen()
+                horizontal_slider()
                 
 
     screen.fill((30, 30, 30))
