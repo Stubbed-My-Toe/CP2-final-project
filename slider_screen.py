@@ -91,7 +91,11 @@ class slider_class:
                 self.slider.setValue(typed_value)
         except ValueError:
             pass
+<<<<<<< HEAD
     #return the val of the slider
+=======
+            
+>>>>>>> 7cc971b5b3ee146ce979674775b75b52282d63ea
     def get_val(self):
         return self.slider.getValue()
 
