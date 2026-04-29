@@ -22,7 +22,7 @@ class slider_class:
                 self.slider.setValue(typed_value)
         except ValueError:
             pass
-
+            
     def get_val(self):
         return self.slider.getValue()
 
