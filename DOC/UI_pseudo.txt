@@ -1,0 +1,45 @@
+-**darin's pseudocode**- 
++================================================+
+|     ++++THIS IS THE UI DESIGN PLANS+++         |
+|                                                |
+|    - everything here we hope to add to the     |
+|      program to convey a professional look     |
+|    - This will help communication within the   |
+|      group.                                    |
+|                                                |
+|                                                |
++================================================+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+THE MAIN THEME
+============================================================================
+Ui is sleek with a light mint green color and has a primary dark background
+The start should be professional and sleek, hence the name, CLEEK
+It will show images that move to make it seem as if it's reactive and waiting for you
+There will be a background banner alongside our icon, replicating a lot of the other gambling websites
+The credits and when the next time you will receive more credits (if you have already logged in)
+We should also add some simple stats, like how much the player had gambled so far
+============================================================================
+
+
+THE GAMES
+============================================================================
+The games will be displayed on the main menu on a sidebar on the left, vertically
+The games will have icons that correspond to what they will do, such as (games having a bomb as the icon)
+The games will have slightly different themes than the main menu, so we will discuss when the time comes
+============================================================================
+
+
+SETTINGS 
+============================================================================
+Settings will have options to
+ ---
+
+- log out
+
+- sign in
+
+- quit
+============================================================================
