@@ -1,1 +1,8 @@
 
+import random
+#make class called deck
+#init func with bool input of joker
+#shuffle func that adds all but jokers to deck and if joker adds 2 jokers
+#draw card func to pull a random card and return it then remove it from deck
+#make len func to return length of deck
+# make iter func thta returns the deck

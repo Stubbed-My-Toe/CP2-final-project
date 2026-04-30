@@ -31,37 +31,69 @@ import pygame
 import pymunk
 import pymunk.pygame_util
 import math
-def create_chip(space, x, y):
-	body = pymunk.Body(1, 1)
-	body.position = (x, y)
-	circle = pymunk.Circle(body, 6)
-	circle.elasticity = 0.6
-	circle.friction = 0
-	space.add(body, circle)
-	return circle
-
+def create_chip(space, x, y,bet):
+    body = pymunk.Body(1, 1)
+    body.position = (x, y)
+    circle = pymunk.Circle(body, 40)
+    circle.collision_type = 1
+    circle.elasticity = 0.6
+    circle.friction = 0
+    circle.reward_value = bet
+    space.add(body, circle)
+    return circle
+bet_return = 0
+multiplier = 0.0
+def on_bucket_hit(arbiter, space, data):
+    # ball (A) hits bucket (B)
+    ball, bucket = arbiter.shapes
+    
+    # Send the ball and the values to the safe removal function
+    space.add_post_step_callback(remove_and_update, ball, bucket.multiplier)
+    return True
 def create_peg(space, x, y):
-	body = space.static_body
-	circle = pymunk.Circle(body, 20, (x, y))
-	circle.elasticity = 0.8
-	circle.friction = 0
-	space.add(circle)
-	return circle
+    body = space.static_body
+    circle = pymunk.Circle(body, 20, (x, y))
+    circle.elasticity = 0.8
+    circle.friction = 0
+    
+    space.add(circle)
+    return circle
+def create_bucket(name,x,y,hight,width):
+    box=pymunk.Poly.create_box(bod)
+def remove_shape(arbiter, space, data):
+    shape_to_kill = arbiter.shapes[0]
+    # This schedules the removal for the very near future
+    space.add_post_step_callback(actual_delete, shape_to_kill)
+    return True 
+def actual_delete(space, shape):
+    space.remove(shape, shape.body)
+
 
 def plinko_main(win,username,password):
     space = pymunk.Space()
     space.gravity = (0, 300)
     clock = pygame.time.Clock()
     draw_options = pymunk.pygame_util.DrawOptions(win)
-    layers=9
-    spaecing=100
+    layers=10
+    spaecing=120
     pegs=[]
-    start=(1000,500)
+    start=(1000,200)
     for x in range(layers):
         for y in range(x+1):
             r=start[0]+(y-(x/2))*spaecing
             c=start[1]+x*(spaecing)
             pegs.append(create_peg(space,int(r),int(c)))
+    bottom_y = start[1] + (layers * spaecing)
+    for i in range(layers+1):
+        box_x = start[0] + (i - (layers / 2)) * spaecing
+        b_body = space.static_body
+        b_body.position = (box_x, bottom_y)
+        b_shape = pymunk.Poly.create_box(b_body, (spaecing * 0.9, 20))
+        b_shape.collision_type = 2
+        b_shape.multiplier = 2.0   
+        space.add(b_shape)
+
+    bet=10
     chips = []
     running = True
     while running:
@@ -72,13 +104,11 @@ def plinko_main(win,username,password):
             # Drop a new chip on mouse click
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                chips.append(create_chip(space, x,y))
+                chips.append(create_chip(space, x,y,bet))
         space.step(1/120)
         win.fill((255, 255, 255))
         space.debug_draw(draw_options)
         pygame.display.flip()
-        for _ in range(4):
-            space.step(1/3000)
     pygame.quit()
 if __name__=="__main__":
     pygame.init()
