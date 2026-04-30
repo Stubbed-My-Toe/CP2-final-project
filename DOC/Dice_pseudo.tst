@@ -1,3 +1,4 @@
+Brett
 #Pseudocode for dice
 
 #from slots bring in all
