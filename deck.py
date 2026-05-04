@@ -21,8 +21,10 @@ class deck:
     def draw_card(self,aceval=1,jackval=11,queenval=12,kingval=13,jokerval=14):
         """returns a card from the deck and removes it
         if there is no card in the deck it will shuffle the deck then return a card and its val"""
+        shuffled=False
         if not self.deck:
             self.shuffle()
+            shuffled=True
         card=self.deck.pop(random.randint(0,len(self.deck)-1))
         if "Ace" in card:
             val = aceval
@@ -64,7 +66,7 @@ class deck:
         elif "Club" in card:
             sute="Club"
             color="black"
-        return card,val,sute,color
+        return card,val,sute,color,shuffled
     def __len__(self):
         return len(self.deck)
     def __iter__(self):
@@ -73,7 +75,7 @@ class deck:
 #example on how to use:
 if "__main__"==__name__:
     bjdeck=deck(False)
-    for x in range(3):
-        card,val,sute,color=bjdeck.draw_card()
-        print(f"the card is {card}\nthe value is {val}\nthe suite is {sute}\nthe color is {color}")
+    for x in range(54):
+        card,val,sute,color,shuffled=bjdeck.draw_card()
+        print(f"it was shuffeld{shuffled}")
     

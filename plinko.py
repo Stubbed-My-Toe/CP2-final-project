@@ -79,7 +79,6 @@ def remove_shape(arbiter, space):
     global dropped
     dropped=False
     shape_to_kill = arbiter.shapes[0]
-    # This schedules the removal for the very near future
     space.add_post_step_callback(actual_delete, shape_to_kill)
     return True 
 def actual_delete(space, shape):
@@ -90,7 +89,7 @@ COOLDOWN = 1
 def plinko_main(win,username,password):
     returne=button("return",300,300,100,40,(100,100,100),(100,100,200))
     drop=button("drop",300,350,100,40,(100,100,100),(100,100,200))
-    bet_slider=vertical_slider(3,win,[300,200],[200,300],[30,30])
+    bet_slider=vertical_slider(3,win,[400,500],[300,400],[300,10])
     coin=pygame.mixer.Sound("sounds/chieuk-coin-257878 (1).wav")
     bounce=pygame.mixer.Sound("sounds/dragon-studio-pop-402322.wav")
     space = pymunk.Space()
@@ -122,26 +121,28 @@ def plinko_main(win,username,password):
     bet=10
     chips = []
     running = True
+    
     while running:
         win.fill((255, 255, 255))
         space.debug_draw(draw_options)
         returne.draw(win)
         drop.draw(win)
-        bet_slider.update_ui(pygame.event.get())
+        monney=300
+        bet=bet_slider.get_val()
         # 1. Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             # Drop a new chip on mouse click
             if drop.is_clicked(event) and not game_state['dropped']:
-                x, y = 1000+random.uniform(-1,1),160
-                chips.append(create_chip(space, x,y,bet))
-                game_state['dropped'] = True
+                if bet <= monney:
+                    x, y = 1000+random.uniform(-1,1),160
+                    chips.append(create_chip(space, x,y,bet))
+                    game_state['dropped'] = True
 
         for x in range(13):
             space.step(1/1200)
-        bet_slider.update_slider1()
-        
+        bet_slider.update_ui(pygame.event.get())
         pygame.display.flip()
 
     pygame.quit()
