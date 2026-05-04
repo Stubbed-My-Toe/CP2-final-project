@@ -72,6 +72,17 @@ class csv_file:
             except Exception as e:
                 print(f"An error occurred: {e}")
             self.sync()
+    def __iter__(self):
+        return iter(self.rows)
+def csv_get_data(csv_file:csv_file,checkers):
+    for x in csv_file:
+        passing=True
+        for y, z in checkers.items():
+            if x[y]!=z:
+                passing=False
+                break
+        if passing:
+            return x
 
 def type_text(text, end="\n", typing=True, random_bounds=(0, .1)):
     """Print text optionally with a typing effect."""
