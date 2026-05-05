@@ -43,7 +43,7 @@ def create_chip(space, x, y,bet):
     circle = pymunk.Circle(body, 40)
     circle.collision_type = 1
     circle.elasticity = 0
-    circle.friction = 0
+    circle.friction = .2
     circle.bet_value = bet 
     space.add(body, circle)
     return circle
@@ -62,7 +62,7 @@ def create_peg(space, x, y):
     body = space.static_body
     circle = pymunk.Circle(body, 20, (x, y))
     circle.elasticity = 0
-    circle.friction = 0
+    circle.friction = .3
     circle.collision_type = 3
     space.add(circle)
     return circle
@@ -90,9 +90,23 @@ def passing():
     pass
 last_play_time = 0
 COOLDOWN = 1
-def plinko_main(win,username,password,file):
+def plinko_main(win,username,password,file:helper.csv_file):
     data=helper.csv_get_data(file,{"username":username,"password":password})
-    
+    font = pygame.font.SysFont('Arial', 30)
+    super = pygame.font.SysFont('Arial', 300)
+    times1 = font.render('x50', True, (0, 0, 0))
+    times2 = font.render('x4', True, (0, 0, 0))
+    times3 = font.render('x3', True, (0, 0, 0))
+    times4 = font.render('x.8', True, (0, 0, 0))
+    times5 = font.render('x.3', True, (0, 0, 0))
+    times6 = font.render('x.8', True, (0, 0, 0))
+    times7 = font.render('x3', True, (0, 0, 0))
+    times8 = font.render('x4', True, (0, 0, 0))
+    times9 = font.render('x50', True, (0, 0, 0))
+    bruh = super.render('bruh', True, (0, 0, 0))
+    moneybox = pygame_widgets.textbox.TextBox(win, 100, 100, 800, 80, fontSize=50,
+                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
+                  onSubmit=passing, radius=10, borderThickness=5)
     returne=button("return",300,300,100,40,(100,100,100),(100,100,200))
     drop=button("drop",300,350,100,40,(100,100,100),(100,100,200))
     bet_slider=vertical_slider(3,win,[400,500],[300,400],[300,10])
@@ -119,49 +133,65 @@ def plinko_main(win,username,password,file):
         box_x = start[0] + (i - (layers / 2)) * spaecing
         b_body = space.static_body
         b_body.position = (box_x, bottom_y)
-        b_shape = pymunk.Poly.create_box(b_body, (spaecing * 0.9, 20))
+        b_shape = pymunk.Poly.create_box(b_body, (spaecing * 0.9, 40))
         b_shape.collision_type = 2
-        b_shape.multiplier = [50,5,3,.8,.5,.8,3,5,50][i]
+        b_shape.multiplier = [50,4,3,.8,.3,.8,3,4,50][i]
         space.add(b_shape)
 
     bet=10
     chips = []
     running = True
-    font = pygame.font.SysFont('Arial', 30)
     while running:
         speed=1
         win.fill((255, 255, 255))
         space.debug_draw(draw_options)
         returne.draw(win)
         drop.draw(win)
-        moneybox = pygame_widgets.textbox.TextBox(win, 100, 100, 800, 80, fontSize=50,
-                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
-                  onSubmit=passing, radius=10, borderThickness=5)
-        moneybox.setText(f"money: {data["cash"]}")
-        monney=int(data["cash"])
+        moneybox.setText(f"money: {game_state["cash"]}")
+        monney=int(game_state["cash"])
         bet=bet_slider.get_val()
         # 1. Event Handling
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_s]:
-            speed=10
+        if keys[pygame.K_q]:
+            speed=100
+        #print(pygame.mouse.get_pos())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             
             # Drop a new chip on mouse click
-            if drop.is_clicked(event) and not game_state['dropped']:
+            if (drop.is_clicked(event) or keys[pygame.K_a]) and not game_state['dropped']:
                 if bet <= monney:
-                    x, y = 1000+random.uniform(-1,1),160
-                    chips.append(create_chip(space, x,y,bet))
+                    game_state['cash'] -= bet # Deduct bet immediately
+                    x, y = 1000 + random.uniform(-1, 1), 160
+                    chips.append(create_chip(space, x, y, bet))
                     game_state['dropped'] = True
-
-        for x in range(13*speed):
-            space.step(1/1200)
+            if returne.is_clicked(event) and 1==2:
+                file.update_row(
+                        {"username": username, "password": password}, 
+                        {"cash": game_state['cash']}
+                    )
+                return
+        listt=[]
+        for x in range(500,1461,120):
+            listt.append(x)
+        win.blit(times1, (listt[0], 1040)) 
+        win.blit(times2, (listt[1], 1040))
+        win.blit(times3, (listt[2], 1040))
+        win.blit(times4, (listt[3], 1040)) 
+        win.blit(times5, (listt[4], 1040))
+        win.blit(times6, (listt[5], 1040))
+        win.blit(times7, (listt[6], 1040)) 
+        win.blit(times8, (listt[7], 1040))
+        win.blit(times9, (listt[8], 1040))
+        if bet==0:
+            win.blit(bruh, (500,500))
+        for x in range(13):
+            space.step((1*speed)/800)
         bet_slider.update_ui(pygame.event.get())
         pygame_widgets.update(pygame.event.get())
         pygame.display.flip()
 
-    pygame.quit()
 if __name__=="__main__":
     pygame.init()
     win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

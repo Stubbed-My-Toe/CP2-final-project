@@ -74,6 +74,26 @@ class csv_file:
             self.sync()
     def __iter__(self):
         return iter(self.rows)
+    def update_row(self, checkers, new_data):
+        """
+        Finds a row matching 'checkers' and updates it with 'new_data'.
+        Then saves the entire thing back to the CSV.
+        """
+        found = False
+        for row in self.rows:
+            if all(row.get(k) == str(v) for k, v in checkers.items()):
+                row.update({k: str(v) for k, v in new_data.items()})
+                found = True
+                break
+        if found:
+            try:
+                with open(self.path_to_csv, mode="w", newline='\n') as file:
+                    writer = csv.DictWriter(file, fieldnames=self.headers)
+                    writer.writeheader()
+                    writer.writerows(self.rows)
+                self.sync() 
+            except Exception as e:
+                print(f"Update failed: {e}")
 def csv_get_data(csv_file:csv_file,checkers):
     for x in csv_file:
         passing=True
