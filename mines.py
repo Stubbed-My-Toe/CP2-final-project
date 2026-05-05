@@ -1,11 +1,21 @@
+#Commented pandas because it is not being used yet 
+#import pandas
+import pygame
+
+pygame.init()
+
+
+screen=pygame.display.set_mode()
+
 #Isaac
 #pygame
 
 #display mines window
+
 #display 5x5 grid
-#ask user to enter bet amount (when the bet amount is conrimed and the game starts, the bet amount is subtracted fro mthe ballance)
+#ask user to enter bet amount (when the bet amount is confirmed and the game starts, the bet amount is subtracted from the ballance)
 #ask user to choose amount of bombs(1-24)
-#else the defalt is 3
+#else the default is 3
 #bomb amount changes multiplier for each square correctly guessed, scaling with the amount of bombs placed on the field, 1 being the lowest ending multiplier, and 24 being the highest
 
 #GAME

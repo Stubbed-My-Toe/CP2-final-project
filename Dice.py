@@ -8,7 +8,7 @@ import pygame_widgets as pw
 from slider_screen import *
 #function for entering bet amount
 def bet():
-    #display how much money do you want to place bets
+    #display how much money do you want to place 
     pw.box = TextBox(100,200)
     #user is brought to the slider screen.
     #user may change the bet amount or the slider amount or just run the game
