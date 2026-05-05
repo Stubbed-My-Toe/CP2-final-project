@@ -93,7 +93,7 @@ COOLDOWN = 1
 def plinko_main(win,username,password,file:helper.csv_file):
     data=helper.csv_get_data(file,{"username":username,"password":password})
     font = pygame.font.SysFont('Arial', 30)
-    super = pygame.font.SysFont('Arial', 300)
+    super = pygame.font.SysFont('Arial', 500)
     times1 = font.render('x50', True, (0, 0, 0))
     times2 = font.render('x4', True, (0, 0, 0))
     times3 = font.render('x3', True, (0, 0, 0))
@@ -150,7 +150,6 @@ def plinko_main(win,username,password,file:helper.csv_file):
         moneybox.setText(f"money: {game_state["cash"]}")
         monney=int(game_state["cash"])
         bet=bet_slider.get_val()
-        # 1. Event Handling
         keys = pygame.key.get_pressed()
         if keys[pygame.K_q]:
             speed=100
@@ -158,15 +157,13 @@ def plinko_main(win,username,password,file:helper.csv_file):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
-            # Drop a new chip on mouse click
             if (drop.is_clicked(event) or keys[pygame.K_a]) and not game_state['dropped']:
                 if bet <= monney:
-                    game_state['cash'] -= bet # Deduct bet immediately
+                    game_state['cash'] -= bet
                     x, y = 1000 + random.uniform(-1, 1), 160
                     chips.append(create_chip(space, x, y, bet))
                     game_state['dropped'] = True
-            if returne.is_clicked(event) and 1==2:
+            if returne.is_clicked(event):
                 file.update_row(
                         {"username": username, "password": password}, 
                         {"cash": game_state['cash']}

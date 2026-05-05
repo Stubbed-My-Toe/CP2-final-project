@@ -162,7 +162,11 @@ def menu(options, descriptions, prompt="Select an option: "):
             break
         else:
             options[choice - 1]()
-
+def add(*nums):
+    out=0
+    for x in nums:
+        out+=x
+    return out
 def get_valid_type(type_return: type, prompt, invalid_prompt="Invalid input. Please try again.",valid=None, typing=False, end="", type_speed=False, random_bounds=(0, .1),min_max=None):
     """
     Prompt the user until they provide a value that can be converted to type_return
