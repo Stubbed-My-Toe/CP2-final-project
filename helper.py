@@ -128,12 +128,16 @@ def clear_term():
             print("\n" * 500)
     except Exception as e:
         raise RuntimeError("error 004 occurred in clear_term") from e
+import functools
+
 def debugger(func):
-    def before_and_after():
-        print(f"before func {func.__name__}")
-        func()
-        print(f"affter func{func.__name__}")
-    return before_and_after
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Before func: {func.__name__}")
+        result = func(*args, **kwargs) # Runs the function and saves the result
+        print(f"After func: {func.__name__}")
+        return result # Returns the original function's result
+    return wrapper
 def menu(options, descriptions, prompt="Select an option: "):
     """
     Displays a menu of options, prompts the user for a selection, and executes
