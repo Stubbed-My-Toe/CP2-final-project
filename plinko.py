@@ -109,7 +109,7 @@ def plinko_main(win,username,password,file:helper.csv_file):
                   onSubmit=passing, radius=10, borderThickness=5)
     returne=button("return",300,300,100,40,(100,100,100),(100,100,200))
     drop=button("drop",300,350,100,40,(100,100,100),(100,100,200))
-    bet_slider=vertical_slider(3,win,[400,500],[300,400],[300,10])
+    bet_slider=vertical_slider(3,win,[400,500],[300,450],[300,10])
     coin=pygame.mixer.Sound("sounds/chieuk-coin-257878 (1).wav")
     bounce=pygame.mixer.Sound("sounds/dragon-studio-pop-402322.wav")
     space = pymunk.Space()
@@ -166,7 +166,7 @@ def plinko_main(win,username,password,file:helper.csv_file):
             if returne.is_clicked(event):
                 file.update_row(
                         {"username": username, "password": password}, 
-                        {"cash": game_state['cash']}
+                        {"cash": game_state["cash"],"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":int(data["times_played_plinko"])+1,"times_played_slots":data["times_played_slots"],}
                     )
                 return
         listt=[]
