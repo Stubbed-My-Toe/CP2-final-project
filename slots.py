@@ -53,26 +53,93 @@ class Sprite:
         self.y=y
     def costume(self,image:int):
         self.cim=self.ims[image]
+    def get_pos(self,choise=""):
+        if choise=="":
+            return self.x,self.y
+        elif choise=="x":
+            return self.x
+        elif choise=="y":
+            return self.y
 
 # 1 & 2: Load and optimize the image
 # Use convert_alpha() for PNGs with transparency
-my_image = Sprite(win,"inages",0,100,100,(100,100))
+offsetx=0
+offset=0
+face=[[Sprite(win,"inages",0,100+offsetx,100+offset,(100,100)),Sprite(win,"inages",1,175+offsetx,100+offset,(100,100)),Sprite(win,"inages",2,250+offsetx,100+offset,(100,100))],
+[Sprite(win,"inages",0,100+offsetx,200+offset,(100,100)),Sprite(win,"inages",1,175+offsetx,200+offset,(100,100)),Sprite(win,"inages",2,250+offsetx,200+offset,(100,100))],
+[Sprite(win,"inages",0,100+offsetx,300+offset,(100,100)),Sprite(win,"inages",1,175+offsetx,300+offset,(100,100)),Sprite(win,"inages",2,250+offsetx,300+offset,(100,100))],
+
+]
+
 running = True
+var=False
+spinning=False
+vol=0
+volconst=0
+stopping=0
+stop=True
+Clock=pygame.time.Clock()
 while running:
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    win.fill((0, 0, 0)) # Clear screen
+    win.fill((255, 255, 255)) # Clear screen
     
     # 3: Draw (blit) image at coordinates (x, y)
-    my_image.render()
+    for q in face:
+        for w in q:
+            w.render()
+            x,y= w.get_pos()
+            if y>300:
+                w.teleport(x,100)
+            if y<100:
+                w.teleport(x,300)
+    if var:
+        for x in face:
+            for num,y in enumerate(x):
+                y.move(0,vol-(num))
+                if vol<10:
+                    vol+=.1
+                    volconst=vol
+                    stop=False
+                else:
+                    stop=True
+    if stopping:
+        # 1. Update shared variables ONCE per frame
+        if vol > 0:
+            vol -= 0.1
+        else:
+            vol = volconst
+            stopping += 1
+
+        # 2. Run the movement logic
+        for x in face:
+            for num, y in enumerate(x):
+                target_y = 200 # Set your desired finish line here
+                
+                if stopping > num or y.get_pos("y") >= target_y and stopping==num:
+                    # Snap to target and stop
+                    y.teleport(y.get_pos("x"), target_y)
+                elif stopping == num:
+                    # Slow down as it approaches
+                    y.move(0, vol)
+                else:
+                    # Move at full speed
+                    y.move(0, volconst)
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_1]:
-        my_image.costume(1)
+    if keys[pygame.K_SPACE] and not spinning and stop:
+        var=True
+        spinning=True
+        vol=-10
+    if keys[pygame.K_x] and spinning and not stopping:
+        var=False
+        spinning=True
+        stopping=1
     # 4: Update display
     pygame.display.flip()
-
+    Clock.tick(60)
 pygame.quit()
 
 
