@@ -4,12 +4,17 @@ import time
 pygame.init()
 pygame.display.set_mode((1, 1))
 pygame.mixer.init()
-pygame.mixer.music.load("sounds/bowser's fortified fortress.mp3")
-pygame.mixer.music.play(loops=-1)
+t=[]
+
+t.append(pygame.mixer.Sound("sounds/bowser's fortified fortress.mp3"))
+
+
 try:
-    while True:
-        pygame.event.pump()
-        time.sleep(0.1)
+    for x in range(2):
+        t[0].play()
+        time.sleep(1)
+while True:
+    pygame.event.pump()
 except KeyboardInterrupt:
     pygame.mixer.music.stop()
     pygame.quit()
