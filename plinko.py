@@ -191,6 +191,7 @@ def plinko_main(win,username,password,file:helper.csv_file):
 
 if __name__=="__main__":
     pygame.init()
+    pygame.mixer.init(0)
     win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     file=helper.csv_file("data_storage.csv")
     plinko_main(win,"bob1","<>",file)

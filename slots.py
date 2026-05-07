@@ -153,9 +153,12 @@ def slots_main(win,username,password,file:helper.csv_file):
     Clock=pygame.time.Clock()
     fin=0
     cooldown=0
-    womp=pygame.mixer.Sound("sounds/universfield-cartoon-fail-trumpet-278822.mp3")
-    spin=pygame.mixer.Sound("sounds/freesound_community-spinner-sound-36693 (mp3cut.net).mp3")
-    chaching=pygame.mixer.Sound("sounds/u_oepgi4ep3v-som_matricula-464025.mp3")
+    try:
+        womp=pygame.mixer.Sound("sounds/universfield-cartoon-fail-trumpet-278822.mp3")
+        spin=pygame.mixer.Sound("sounds/freesound_community-spinner-sound-36693 (mp3cut.net).mp3")
+        chaching=pygame.mixer.Sound("sounds/u_oepgi4ep3v-som_matricula-464025.mp3")
+    except:
+        pass
     whegts=[10, 25, 45, 65, 80, 92, 100] 
     multiplyer=[3,5,7,15,30,70,200]
     #multiplyer=[1000,1000,1000,1000,1000,1000,1000]
@@ -166,13 +169,11 @@ def slots_main(win,username,password,file:helper.csv_file):
                   onSubmit=passing, radius=10, borderThickness=5)
     super = pygame.font.SysFont('Arial', 500)
     bruh = super.render('bruh', True, (0, 0, 0))
-    returne=button("return",300,900,200,40,(100,100,100),(100,100,200))
-    drop=button("spin/stop",300,950,200,40,(100,100,100),(100,100,200))
+    returne=button("return",300,600,200,40,(100,100,100),(100,100,200))
+    drop=button("spin/stop",300,650,200,40,(100,100,100),(100,100,200))
     while running:
         events=pygame.event.get()
         win.fill((255, 255, 255)) # Clear screen
-        returne.draw(win)
-        drop.draw(win)
         # 3: Draw (blit) image at coordinates (x, y)
         if spinning:
             if vol<10:
@@ -195,23 +196,25 @@ def slots_main(win,username,password,file:helper.csv_file):
                                 tdata[2]=0
                                 stopping+=1
                             else:
-                                y.change_data([y.stored_data()[0],y.stored_data()[1],(y.stored_data()[2]+3)])
+                                y.change_data([y.stored_data()[0],y.stored_data()[1],(y.stored_data()[2]-1)])
                         y.change_data([tdata[0],tdata[1],tdata[2]-.1])
                         y.move(0,y.stored_data()[2])
                     else:
                         tdata=y.stored_data()
                         y.change_data([tdata[0],tdata[1],vol])
                         y.move(0,y.stored_data()[2])
-        for q in face:
+        for num,q in enumerate(face):
             for w in q:
                 w.render()
                 x,y= w.get_pos()
                 if y>400:
                     w.teleport(x,100)
-                    w.costume(weghted_random(costumes,whegts))
+                    if num>stopping:
+                        w.costume(weghted_random(costumes,whegts))
                 if y<100:
                     w.teleport(x,400)
-                    w.costume(weghted_random(costumes,whegts))
+                    if num>stopping:
+                        w.costume(weghted_random(costumes,whegts))
         info.render()
         
         if stopping==4:
@@ -229,19 +232,22 @@ def slots_main(win,username,password,file:helper.csv_file):
                     cash+=bet*multiplyer[stat[0]]
                 else:
                     fail=True
-            spin.stop()
-            if fail:
-                womp.play()
-            else:
-                chaching.play()
-
+            try:
+                spin.stop()
+                if fail:
+                    womp.play()
+                else:
+                    chaching.play()
+            except:
+                pass
         if not spinning and stoped:
             for x in face:
                 for y in x:
                     y.teleport(y.stored_data()[0],y.stored_data()[1])
             bet_slider.update_ui(events)
         moneybox.setText(f"money: {cash}")
-
+        returne.draw(win)
+        drop.draw(win)
         keys = pygame.key.get_pressed()
         cooldown-=1
         if bet==0:
@@ -258,7 +264,10 @@ def slots_main(win,username,password,file:helper.csv_file):
                     stoped=True
                     vol=-10
                     cooldown=100
-                    spin.play(-1)
+                    try:
+                        spin.play(-1)
+                    except:
+                        pass
                     
             if (drop.is_clicked(event))and spinning and cooldown<0:
                 var=False
