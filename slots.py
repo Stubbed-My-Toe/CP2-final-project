@@ -96,7 +96,7 @@ for num,x in enumerate(check_points):
         if data[num]!=color:
             error()
     except:
-        error
+        error()
 
 def weghted_random(l1,wheghts):
    rnum=random.uniform(0,100)
