@@ -132,7 +132,7 @@ def slots_main(win,username,password,file:helper.csv_file):
     [Sprite(win,"images/slots",0,100+offsetx,300+offset,(100,100),[100+offsetx,300+offset,0]),Sprite(win,"images/slots",1,175+offsetx,300+offset,(100,100),[175+offsetx,300+offset,0]),Sprite(win,"images/slots",2,250+offsetx,300+offset,(100,100),[250+offsetx,300+offset,0])],
     [Sprite(win,"images/slots",0,100+offsetx,400+offset,(100,100),[100+offsetx,400+offset,0]),Sprite(win,"images/slots",1,175+offsetx,400+offset,(100,100),[175+offsetx,400+offset,0]),Sprite(win,"images/slots",2,250+offsetx,400+offset,(100,100),[250+offsetx,400+offset,0])],
     ]
-    info=Sprite(win,"images/slot",1,600,20,(1000,1000),"")
+    info=Sprite(win,"images/slot",0,600,20,(1000,1000),"")
 
     cash=int(data["cash"])
 
