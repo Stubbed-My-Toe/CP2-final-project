@@ -47,30 +47,33 @@ def check():
                 error()
         except:
             error()
-def checker(file,user,passer):
+def checker(file,user,passer,data):
     try:
-        data=helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()})
+        data.append(helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()}))
         return data
     except:
-        return False
-    
+        return "bad"
+
 def main():
     pygame.init()
-    data=None
+    data=[]
     win=pygame.display.set_mode((0,0),pygame.FULLSCREEN)
     check()
     file=helper.csv_file("data_storage.csv")
     usernameb = pygame_widgets.textbox.TextBox(win, 100, 100, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="username")
     passwordb = pygame_widgets.textbox.TextBox(win, 100, 160, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="password")
-    usernameb.onSubmit(checker, (file, usernameb, passwordb))
-    passwordb.onSubmit(checker, (file, usernameb, passwordb))
+    usernameb.onSubmit = checker
+    usernameb.onSubmitParams = (file, usernameb, passwordb,data)
+
+    passwordb.onSubmit = checker
+    passwordb.onSubmitParams = (file, usernameb, passwordb,data)
     passwordb.isPassword = True
-    return_button=button.button("save and quit",30,30,300,50,(200,200,200),(100,100,200))
-    dice_btn=button.button("dice",)
+    return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
+    dice_btn=button.button("dice",30,90,300,50,(100,100,100),(100,100,200))
     clock=pygame.Clock()
     moneybox = pygame_widgets.textbox.TextBox(win, 100, 100, 800, 80, fontSize=50,
                   borderColour=(255, 0, 0), textColour=(0, 200, 0),
-                  onSubmit=passing, radius=10, borderThickness=5)
+                  onSubmit=plinko.passing, radius=10, borderThickness=5)
     while True:
         events=pygame.event.get()
         
@@ -78,11 +81,16 @@ def main():
             if return_button.is_clicked(event):
                 quit()
         win.fill((255, 255, 255))
-        if not data:
-            data = passwordb.onSubmitExecute
+        if len(data)==0:
             pygame_widgets.update(events)
+            moneybox.hide()
         else:
+            if data=="bad":
+                data=[]
+                continue
+            data=data[0]
             moneybox.setText(f"money: {data["cash"]}")
+            
         return_button.draw(win)
         pygame.display.update()
         clock.tick(60)
