@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Liam
 #make a button class
 #init the class with text, x, y, width, height, color, hover_color
@@ -5,3 +6,13 @@ Liam
 # Change color if mouse is hovering
 # Render and center text
 #make is clicked func that will return a bool depending on if it is clicked
+=======
+
+import random
+#make class called deck
+#init func with bool input of joker
+#shuffle func that adds all but jokers to deck and if joker adds 2 jokers
+#draw card func to pull a random card and return it then remove it from deck
+#make len func to return length of deck
+# make iter func thta returns the deck
+>>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171

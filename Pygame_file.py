@@ -21,6 +21,7 @@ while running:
     mouse_pos = pygame.mouse.get_pos()
     
     for event in pygame.event.get():
+<<<<<<< HEAD
         if event.type == pygame.QUIT:
             running = False
         
@@ -30,6 +31,12 @@ while running:
                 print("Start Game Clicked!")
                 from slider_screen import *
                 horizontal_slider()
+=======
+        if button_rect.collidepoint(mouse_pos):
+            print("Start Game Clicked!")
+            from slider_screen import *
+            slider_screen()
+>>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
                 
 
     screen.fill((30, 30, 30))

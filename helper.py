@@ -72,6 +72,37 @@ class csv_file:
             except Exception as e:
                 print(f"An error occurred: {e}")
             self.sync()
+    def __iter__(self):
+        return iter(self.rows)
+    def update_row(self, checkers, new_data):
+        """
+        Finds a row matching 'checkers' and updates it with 'new_data'.
+        Then saves the entire thing back to the CSV.
+        """
+        found = False
+        for row in self.rows:
+            if all(row.get(k) == str(v) for k, v in checkers.items()):
+                row.update({k: str(v) for k, v in new_data.items()})
+                found = True
+                break
+        if found:
+            try:
+                with open(self.path_to_csv, mode="w", newline='\n') as file:
+                    writer = csv.DictWriter(file, fieldnames=self.headers)
+                    writer.writeheader()
+                    writer.writerows(self.rows)
+                self.sync() 
+            except Exception as e:
+                print(f"Update failed: {e}")
+def csv_get_data(csv_file:csv_file,checkers):
+    for x in csv_file:
+        passing=True
+        for y, z in checkers.items():
+            if x[y]!=z:
+                passing=False
+                break
+        if passing:
+            return x
 
 def type_text(text, end="\n", typing=True, random_bounds=(0, .1)):
     """Print text optionally with a typing effect."""
@@ -97,12 +128,16 @@ def clear_term():
             print("\n" * 500)
     except Exception as e:
         raise RuntimeError("error 004 occurred in clear_term") from e
+import functools
+
 def debugger(func):
-    def before_and_after():
-        print(f"before func {func.__name__}")
-        func()
-        print(f"affter func{func.__name__}")
-    return before_and_after
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"Before func: {func.__name__}")
+        result = func(*args, **kwargs) # Runs the function and saves the result
+        print(f"After func: {func.__name__}")
+        return result # Returns the original function's result
+    return wrapper
 def menu(options, descriptions, prompt="Select an option: "):
     """
     Displays a menu of options, prompts the user for a selection, and executes
@@ -131,7 +166,11 @@ def menu(options, descriptions, prompt="Select an option: "):
             break
         else:
             options[choice - 1]()
-
+def add(*nums):
+    out=0
+    for x in nums:
+        out+=x
+    return out
 def get_valid_type(type_return: type, prompt, invalid_prompt="Invalid input. Please try again.",valid=None, typing=False, end="", type_speed=False, random_bounds=(0, .1),min_max=None):
     """
     Prompt the user until they provide a value that can be converted to type_return

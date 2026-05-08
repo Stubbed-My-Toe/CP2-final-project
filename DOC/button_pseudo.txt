@@ -1,0 +1,6 @@
+#make a button class
+#init the class with text, x, y, width, height, color, hover_color
+#draw the button
+# Change color if mouse is hovering
+# Render and center text
+#make is clicked func that will return a bool depending on if it is clicked
