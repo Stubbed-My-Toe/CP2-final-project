@@ -1,11 +1,5 @@
 #Commented pandas because it is not being used yet 
 #import pandas
-import pygame
-
-pygame.init()
-
-
-screen=pygame.display.set_mode()
 
 #Isaac
 #pygame
@@ -13,7 +7,7 @@ screen=pygame.display.set_mode()
 #display mines window
 
 #display 5x5 grid
-#ask user to enter bet amount (when the bet amount is confirmed and the game starts, the bet amount is subtracted from the ballance)
+#ask user to enter bet amount (when the bet amount is confirmed and the game starts, the bet amount is subtracted from the balance)
 #ask user to choose amount of bombs(1-24)
 #else the default is 3
 #bomb amount changes multiplier for each square correctly guessed, scaling with the amount of bombs placed on the field, 1 being the lowest ending multiplier, and 24 being the highest
@@ -28,3 +22,28 @@ screen=pygame.display.set_mode()
         #have users click tiles, if safe, turn tile blue, and increase multiplier. 
         #if tile turns red, it's a bomb, and it will say game over, end the game
         #The Game resets and is playable again and the player can choose to go back home or play different games on the side bar
+
+
+import pygame
+import helper
+#HEY GUYS, I NEED HELP. I AM TRYING TO LEARN PYGAME, BUT IT IS SO COMPLICATED
+#I NEED HELP, PLEASE
+#I NEED SOMEONE TO COME IN HERE, AND TELL ME HOW TO CODE PYGAME
+def mines_main(win:pygame.display,username,password,file):
+    data=helper.csv_get_data(file,{"username":username,"password":password})
+    clock=pygame.time.Clock()
+    while True:
+        win.fill((255, 255, 255))
+        keys = pygame.key.get_pressed()
+        events=pygame.event.get()
+        
+        if keys[pygame.K_ESCAPE]:
+            quit()
+        pygame.display.flip()
+
+if __name__=="__main__":
+    pygame.init()
+    win = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    running = True
+    file=helper.csv_file("data_storage.csv")
+    mines_main(win,"bob1","<>",file)

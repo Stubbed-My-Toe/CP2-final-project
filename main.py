@@ -6,16 +6,17 @@
     #one to exit the game
 import pygame
 import button
-import Dice
-import Blackjack
+#import Dice
+#import Blackjack
 import helper
 import slots
-import mines
+#import mines
 import plinko
-import slider_screen
-import cards
-import deck
-import installer
+#import slider_screen
+#import cards
+#import deck
+#import installer
+import hashlib
 #import Pygame_file
 import pygame_widgets
 def error():
@@ -26,70 +27,75 @@ def error():
 )
 def check():
     try:
-        img = pygame.image.load('images/coconut.jpg')
+        with open("images/coconut.jpg", "rb") as f:
+            file_bytes = f.read()
+            # Create a unique SHA-256 string for this specific file
+            if hashlib.sha256(file_bytes).hexdigest()!="8a2eb9ac1cbded56a8dc018d02b74a30f14dd3163b7ceed4e9908ec7d077de18":
+                raise TabError
     except:
         error()
-    check_points = [
-        (50, 80),  
-        (112, 112),
-        (100, 100),   
-        (98, 160)   
-    ]
-    data=[(109, 60, 45, 255),
-    (83, 37, 22, 255),
-    (100, 53, 37, 255),
-    (38, 15, 9, 255)]
-    for num,x in enumerate(check_points):
-        try:
-            color = img.get_at(x)
-
-            if data[num]!=color:
-                error()
-        except:
-            error()
-def checker(file,user,passer,data):
+     
+# Example: store this string once, then check other images against it
+def checker(file,user,passer):
+    global data
     try:
-        data.append(helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()}))
-        return data
+        data=helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()})
     except:
-        return "bad"
+        data= "bad"
 
 def main():
+    global data
     pygame.init()
-    data=[]
+    data=None
     win=pygame.display.set_mode((0,0),pygame.FULLSCREEN)
     check()
     file=helper.csv_file("data_storage.csv")
     usernameb = pygame_widgets.textbox.TextBox(win, 100, 100, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="username")
     passwordb = pygame_widgets.textbox.TextBox(win, 100, 160, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="password")
     usernameb.onSubmit = checker
-    usernameb.onSubmitParams = (file, usernameb, passwordb,data)
+    usernameb.onSubmitParams = (file, usernameb, passwordb)
 
     passwordb.onSubmit = checker
-    passwordb.onSubmitParams = (file, usernameb, passwordb,data)
+    passwordb.onSubmitParams = (file, usernameb, passwordb)
     passwordb.isPassword = True
     return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
     dice_btn=button.button("dice",30,90,300,50,(100,100,100),(100,100,200))
-    clock=pygame.Clock()
-    moneybox = pygame_widgets.textbox.TextBox(win, 100, 100, 800, 80, fontSize=50,
+    slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
+    black_jack=button.button("blackjack",210,90,300,50,(100,100,100),(100,100,200))
+    plinko_btn=button.button("plinko",30,270,300,50,(100,100,100),(100,100,200))
+    mines_btn=button.button("mines",30,330,300,50,(100,100,100),(100,100,200))
+    clock=pygame.time.Clock()
+    moneybox = pygame_widgets.textbox.TextBox(win, 500, 100, 800, 80, fontSize=50,
                   borderColour=(255, 0, 0), textColour=(0, 200, 0),
                   onSubmit=plinko.passing, radius=10, borderThickness=5)
     while True:
+        win.fill((255, 255, 255))
         events=pygame.event.get()
-        
         for event in events:
             if return_button.is_clicked(event):
                 quit()
-        win.fill((255, 255, 255))
-        if len(data)==0:
-            pygame_widgets.update(events)
-            moneybox.hide()
+        if data==None:
+            pass
         else:
             if data=="bad":
-                data=[]
+                data=None
                 continue
-            data=data[0]
-            moneybox.setText(f"money: {data["cash"]}")
+            else:
+                moneybox.setText(f"money: {data["cash"]}")
+                dice_btn.draw(win)
+                slots_btn.draw(win)
+                black_jack.draw(win)
+                plinko_btn.draw(win)
+                mines_btn.draw(win)
+                usernameb.hide()
+                passwordb.hide()
+                for event in events:
+                    if dice_btn.is_clicked(event):
+                        pass #dice main
+                    if slots_btn.is_clicked(event):
+                        slots.slots_main(win,data["username"],data["password"],file)
+        pygame_widgets.update(events)
+                
             
         return_button.draw(win)
         pygame.display.update()

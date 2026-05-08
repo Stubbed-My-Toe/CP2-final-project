@@ -1,22 +1,19 @@
 #Brett
 # make the ui
+from main import *
 
-
-
+import pygame
+import pygame_widgets
 
 #button to go back
-
-
+p
 
 
 #button to raize bet
 
 
 
-
-#button to lowwer bet
-
-
+#Button to lesson bet
 
 
 #button to spin
