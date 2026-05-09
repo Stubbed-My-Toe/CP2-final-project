@@ -6,7 +6,7 @@ pygame.display.set_mode((1, 1))
 pygame.mixer.init()
 t=[]
 
-t=pygame.mixer.Sound("sounds/bowser's fortified fortress.mp3")
+t=pygame.mixer.Sound("sounds/najjars commit.wav")
 tim=t.get_length()
 
 

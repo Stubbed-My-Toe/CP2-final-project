@@ -6,7 +6,7 @@ import pygame
 import pygame_widgets
 
 #button to go back
-p
+
 
 
 #button to raize bet
@@ -278,6 +278,8 @@ def slots_main(win,username,password,file:helper.csv_file):
                         {"username": username, "password": password}, 
                         {"cash": cash,"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":data["times_played_plinko"],"times_played_slots":int(data["times_played_slots"])+1,}
                     )
+                bet_slider.kill()
+                del moneybox
                 return
         pygame_widgets.update(events)
         # 4: Update display

@@ -46,7 +46,11 @@ class vertical_slider:
         if not self.output.selected:
             self.output.setText(str(self.get_val()))
         pygame_widgets.update(events)
-
+    def kill(self):
+        self.slider1.hide()
+        self.output.hide()
+        self.slider1.disable()
+        self.output.disable()
 
 
 class horizontal_slider:

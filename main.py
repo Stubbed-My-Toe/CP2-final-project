@@ -61,7 +61,7 @@ def main():
     return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
     dice_btn=button.button("dice",30,90,300,50,(100,100,100),(100,100,200))
     slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
-    black_jack=button.button("blackjack",210,90,300,50,(100,100,100),(100,100,200))
+    black_jack=button.button("blackjack",30,210,300,50,(100,100,100),(100,100,200))
     plinko_btn=button.button("plinko",30,270,300,50,(100,100,100),(100,100,200))
     mines_btn=button.button("mines",30,330,300,50,(100,100,100),(100,100,200))
     clock=pygame.time.Clock()
@@ -91,9 +91,21 @@ def main():
                 passwordb.hide()
                 for event in events:
                     if dice_btn.is_clicked(event):
+                        moneybox.hide()
                         pass #dice main
                     if slots_btn.is_clicked(event):
+                        moneybox.hide()
                         slots.slots_main(win,data["username"],data["password"],file)
+                    if black_jack.is_clicked(event):
+                        moneybox.hide()
+                        pass
+                    if plinko_btn.is_clicked(event):
+                        moneybox.hide()
+                        plinko.plinko_main(win,data["username"],data["password"],file)
+                    if mines_btn.is_clicked(event):
+                        moneybox.hide()
+                        pass
+                    moneybox.show()
         pygame_widgets.update(events)
                 
             
