@@ -1,78 +1,17 @@
-#from cards bring in all
-
-'''-Darin's part of pseudo code-'''
-# Blackjack game pseudo code
-# The main function will display the options
-# Options are: change bet amount, start game, return to menu
-
-# Start with bet = 5 dollars (default)
-# bet can be changed to any number between 1 and current cash
-
-# Create a variable called deck - bjdeck = deck(False)
-# The deck has all 52 cards (no jokers)
-# The counting deck func: when pulling a random card, it randomly selects a card and removes it from deck (counts how many left)
-
-# When player starts game:
-    # Check if bet amount is 0. If yes, ask to change bet first.
-    # Use the saved bet amount for the round.
-
-# Deal cards:
-    # Player gets two cards face up
-    # Dealer gets one card face up
-
-# Check if player's hand value equals 21:
-    # If yes, player wins automatically (blackjack) and gets 2x bet
-
-# Player turn:
-    # Options: HIT or STAND
-    # If player hits, draw a random card from deck and add to player's hand face up
-    # If player stands, they don't draw any more cards
-    # After each hit, check:
-        # If hand value is exactly 21, player wins (stop)
-        # If hand value is over 21, player busts and loses (stop)
-
-# Dealer turn (happens after player stands or wins, but not if player busted):
-    # Dealer draws cards for however many times the player hit
-    # But even if player didn't hit at all (0 hits), dealer still draws at least one card
-    # Dealer must keep drawing until their hand value is at least 17 (simple rule)
-    # If dealer goes over 21, dealer busts and player wins
-
-# Determine winner:
-    # Player wins if:
-        # Player has blackjack (21 on first two cards)
-        # Player's hand value is greater than dealer's hand value (both under 22)
-        # Dealer busts
-    # Player loses if:
-        # Player busts
-        # Dealer's hand value is greater than player's (both under 22)
-    # Push (tie) if both have same value
-
-# Winnings calculation:
-    # Win = get back bet amount x2 (so net profit of bet amount)
-    # Loss = lose the bet amount
-    # Push = get bet amount back (no change)
-
-# After round ends:
-    # Update cash
-    # Return to main menu
-    # Player can change bet again or start a new game
+# ...existing code...
 import pygame
 import sys
-from cards import Deck, hand_total, short_name
-
+from Countcards import Deck, hand_total, short_name
 
 pygame.init()
 
-
 # window
-WIDTH = 1080
-HEIGHT = 1080
+WIDTH, HEIGHT = 1080, 1080
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Blackjack")
 clock = pygame.time.Clock()
 
-
-# colors
+# colors & fonts
 WHITE  = (255, 255, 255)
 BLACK  = (0, 0, 0)
 GREEN  = (0, 180, 0)
@@ -82,10 +21,17 @@ YELLOW = (220, 200, 50)
 DARK   = (30, 30, 30)
 BTNBG  = (60, 60, 60)
 
-
 font_big   = pygame.font.SysFont("Arial", 28, bold=True)
 font_med   = pygame.font.SysFont("Arial", 20)
 font_small = pygame.font.SysFont("Arial", 16)
+anim_font  = pygame.font.SysFont("Arial", 20, bold=True)
+
+# card visual size (vertical)
+CARD_W, CARD_H = 90, 140
+CARD_SPACING_X = 130
+BASE_X = 40
+DEALER_Y = 150
+PLAYER_Y = 225
 
 
 class Game:
@@ -100,17 +46,35 @@ class Game:
 
     def new_round(self):
         self.deck = Deck()
-        self.player = [self.deck.draw(), self.deck.draw()]
-        self.dealer = [self.deck.draw()]
+        self.player = []
+        self.dealer = []
+        # player card 1
+        c = self.deck.draw()
+        if c:
+            animate_card_pygame(short_name(c), end_pos=(BASE_X, PLAYER_Y))
+            self.player = [c]
+        # player card 2
+        c = self.deck.draw()
+        if c:
+            animate_card_pygame(short_name(c), end_pos=(BASE_X + CARD_SPACING_X, PLAYER_Y))
+            self.player.append(c)
+        # dealer card 1
+        c = self.deck.draw()
+        if c:
+            animate_card_pygame(short_name(c), end_pos=(BASE_X, DEALER_Y))
+            self.dealer = [c]
         self.message = ""
         self.state = "playing"
-
-        # instant blackjack
         if hand_total(self.player) == 21:
             self.end_round("blackjack")
 
     def hit(self):
-        self.player.append(self.deck.draw())
+        c = self.deck.draw()
+        if not c:
+            return
+        pos_x = BASE_X + CARD_SPACING_X * (len(self.player))
+        animate_card_pygame(short_name(c), end_pos=(pos_x, PLAYER_Y))
+        self.player.append(c)
         total = hand_total(self.player)
         if total > 21:
             self.end_round("bust")
@@ -122,11 +86,13 @@ class Game:
 
     def dealer_turn(self):
         player_total = hand_total(self.player)
-
-        # dealer hits until they meet or beat the player's total
         while hand_total(self.dealer) < player_total:
-            self.dealer.append(self.deck.draw())
-
+            c = self.deck.draw()
+            if not c:
+                break
+            pos_x = BASE_X + CARD_SPACING_X * (len(self.dealer))
+            animate_card_pygame(short_name(c), end_pos=(pos_x, DEALER_Y))
+            self.dealer.append(c)
         if hand_total(self.dealer) > 21:
             self.end_round("dealer_bust")
         else:
@@ -136,26 +102,24 @@ class Game:
         self.state = "result"
         p = hand_total(self.player)
         d = hand_total(self.dealer)
-
         if reason == "bust":
             self.cash -= self.bet
-            self.message = "Busted! -$" + str(self.bet)
+            self.message = f"Busted! -${self.bet}"
         elif reason == "blackjack":
             self.cash += self.bet * 2
-            self.message = "BLACKJACK!! +$" + str(self.bet * 2)
+            self.message = f"BLACKJACK!! +${self.bet * 2}"
         elif reason == "dealer_bust":
             self.cash += self.bet
-            self.message = "Dealer busted! +$" + str(self.bet)
+            self.message = f"Dealer busted! +${self.bet}"
         elif reason == "compare":
             if p > d:
                 self.cash += self.bet
-                self.message = "You win! (" + str(p) + " vs " + str(d) + ")  +$" + str(self.bet)
+                self.message = f"You win! ({p} vs {d})  +${self.bet}"
             elif d > p:
                 self.cash -= self.bet
-                self.message = "Dealer wins. (" + str(d) + " vs " + str(p) + ")  -$" + str(self.bet)
+                self.message = f"Dealer wins. ({d} vs {p})  -${self.bet}"
             else:
                 self.message = "Tie! No change."
-
         if self.cash <= 0:
             self.cash = 200
             self.message += "  | Broke! Reset to $200"
@@ -169,12 +133,10 @@ class Game:
         return "  ".join(short_name(c) for c in hand)
 
 
-# helper to draw text
 def write(text, f, color, x, y):
     screen.blit(f.render(text, True, color), (x, y))
 
 
-# draws a button and returns the rect so we can click-check it
 def button(text, x, y, w=120, h=38, color=BTNBG):
     rect = pygame.Rect(x, y, w, h)
     pygame.draw.rect(screen, color, rect, border_radius=4)
@@ -184,23 +146,104 @@ def button(text, x, y, w=120, h=38, color=BTNBG):
     return rect
 
 
+def pump_events_allow_quit():
+    for ev in pygame.event.get():
+        if ev.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        # keep other events in main loop by ignoring them here
+
+
+def draw_hud(g):
+    write("BLACKJACK", font_big, WHITE, 20, 15)
+    write("Cash: $" + str(g.cash), font_med, GREEN, 20, 55)
+    write("Bet: $" + str(g.bet), font_med, YELLOW, 210, 55)
+    if g.state in ("playing", "result"):
+        write("Dealer:", font_med, WHITE, 20, DEALER_Y)
+        dval = hand_total(g.dealer)
+        dcol = RED if dval > 21 else WHITE
+        write("Total: " + str(dval), font_small, dcol, 20, DEALER_Y + CARD_H + 8)
+        write("You:", font_med, WHITE, 20, PLAYER_Y)
+        pval = hand_total(g.player)
+        pcol = RED if pval > 21 else (GREEN if pval == 21 else WHITE)
+        write("Total: " + str(pval), font_small, pcol, 20, PLAYER_Y + CARD_H + 8)
+        if g.deck:
+            write("Cards left: " + str(g.deck.cards_left()), font_small, GRAY, 20, PLAYER_Y + CARD_H + 40)
+
+
+def draw_cards(g):
+    """Draw card rectangles and labels for dealer and player."""
+    # dealer
+    for idx, card in enumerate(g.dealer):
+        rx = BASE_X + CARD_SPACING_X * idx
+        ry = DEALER_Y
+        r = pygame.Rect(rx, ry, CARD_W, CARD_H)
+        pygame.draw.rect(screen, WHITE, r, border_radius=8)
+        pygame.draw.rect(screen, GRAY, r, 2, border_radius=8)
+        lbl = anim_font.render(short_name(card), True, BLACK)
+        screen.blit(lbl, (r.x + 8, r.y + 8))
+    # player
+    for idx, card in enumerate(g.player):
+        rx = BASE_X + CARD_SPACING_X * idx
+        ry = PLAYER_Y
+        r = pygame.Rect(rx, ry, CARD_W, CARD_H)
+        pygame.draw.rect(screen, WHITE, r, border_radius=8)
+        pygame.draw.rect(screen, GRAY, r, 2, border_radius=8)
+        lbl = anim_font.render(short_name(card), True, BLACK)
+        screen.blit(lbl, (r.x + 8, r.y + 8))
+
+
+def ease_out_cubic(t):
+    return 1 - pow(1 - t, 3)
+
+
+def animate_card_pygame(card_text, start_pos=(-250, 200), end_pos=(40, 250), duration_ms=420):
+    """Smooth time-based slide with ease-out. Keeps window responsive and shows other cards."""
+    start = pygame.Vector2(start_pos)
+    end = pygame.Vector2(end_pos)
+    start_time = pygame.time.get_ticks()
+    while True:
+        now = pygame.time.get_ticks()
+        elapsed = now - start_time
+        t = min(1.0, elapsed / max(1, duration_ms))
+        eased = ease_out_cubic(t)
+        pos = start.lerp(end, eased)
+
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        screen.fill(DARK)
+        draw_hud(game)
+        # draw existing cards (the new card is NOT appended yet, so it won't be shown in draw_cards)
+        draw_cards(game)
+
+        # draw animated card on top
+        rect = pygame.Rect(int(pos.x), int(pos.y), CARD_W, CARD_H)
+        pygame.draw.rect(screen, WHITE, rect, border_radius=8)
+        pygame.draw.rect(screen, GRAY, rect, 2, border_radius=8)
+        lbl = anim_font.render(card_text, True, BLACK)
+        screen.blit(lbl, (rect.x + 8, rect.y + 8))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+        if t >= 1.0:
+            break
+
+
+# main loop
 game = Game()
 running = True
-
 while running:
     screen.fill(DARK)
-
-    # top bar
+    # top HUD
     write("BLACKJACK", font_big, WHITE, 20, 15)
     write("Cash: $" + str(game.cash), font_med, GREEN, 20, 55)
     write("Bet: $" + str(game.bet), font_med, YELLOW, 210, 55)
 
-    # buttons we might draw this frame (set to None if not shown)
-    btn_deal     = None
-    btn_hit      = None
-    btn_stand    = None
-    btn_bet_up   = None
-    btn_bet_down = None
+    btn_deal = btn_hit = btn_stand = btn_bet_up = btn_bet_down = None
 
     if game.state in ("menu", "result"):
         btn_deal     = button("DEAL", 20, 100, 120, 38, (0, 120, 0))
@@ -208,23 +251,12 @@ while running:
         btn_bet_down = button("-$5",  440, 48, 80, 32)
 
     if game.state in ("playing", "result"):
-        # dealer hand
-        write("Dealer:  " + game.hand_str(game.dealer), font_med, WHITE, 20, 150)
-        dval = hand_total(game.dealer)
-        dcol = RED if dval > 21 else WHITE
-        write("Total: " + str(dval), font_small, dcol, 20, 178)
-
-        # player hand
-        write("You:     " + game.hand_str(game.player), font_med, WHITE, 20, 225)
-        pval = hand_total(game.player)
-        pcol = RED if pval > 21 else (GREEN if pval == 21 else WHITE)
-        write("Total: " + str(pval), font_small, pcol, 20, 253)
-
-        write("Cards left: " + str(game.deck.cards_left()), font_small, GRAY, 20, 415)
+        draw_hud(game)
+        draw_cards(game)
 
     if game.state == "playing":
-        btn_hit   = button("HIT",   20,  300, 100, 38)
-        btn_stand = button("STAND", 130, 300, 100, 38)
+        btn_hit   = button("HIT",   20,  400, 100, 38)
+        btn_stand = button("STAND", 130, 400, 100, 38)
 
     if game.state == "result":
         if "+" in game.message:
@@ -233,16 +265,13 @@ while running:
             mcol = RED
         else:
             mcol = YELLOW
-        write(game.message, font_small, mcol, 20, 310)
+        write(game.message, font_small, mcol, 20, 450)
 
-    # event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my = event.pos
-
             if btn_deal and btn_deal.collidepoint(mx, my):
                 game.new_round()
             if btn_bet_up and btn_bet_up.collidepoint(mx, my):
@@ -259,5 +288,3 @@ while running:
 
 pygame.quit()
 sys.exit()
-
-    
