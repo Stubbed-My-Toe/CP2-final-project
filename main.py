@@ -59,11 +59,11 @@ def main():
     passwordb.onSubmitParams = (file, usernameb, passwordb)
     passwordb.isPassword = True
     return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
-    dice_btn=button.button("dice",30,90,300,50,(100,100,100),(100,100,200))
+    dice_btn=button.button("dice (WIP)",30,90,300,50,(100,100,100),(100,100,200))
     slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
     black_jack=button.button("blackjack",30,210,300,50,(100,100,100),(100,100,200))
     plinko_btn=button.button("plinko",30,270,300,50,(100,100,100),(100,100,200))
-    mines_btn=button.button("mines",30,330,300,50,(100,100,100),(100,100,200))
+    mines_btn=button.button("mines (WIP)",30,330,300,50,(100,100,100),(100,100,200))
     clock=pygame.time.Clock()
     moneybox = pygame_widgets.textbox.TextBox(win, 500, 100, 800, 80, fontSize=50,
                   borderColour=(255, 0, 0), textColour=(0, 200, 0),

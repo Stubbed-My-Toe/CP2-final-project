@@ -6,7 +6,9 @@ import pygame
 import pygame_widgets
 
 #button to go back
-
+class Button_main():
+    def button_mains():
+        print("HI")
 
 
 #button to raize bet
