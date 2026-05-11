@@ -172,6 +172,8 @@ def plinko_main(win,username,password,file:helper.csv_file):
                         {"username": username, "password": password}, 
                         {"cash": game_state["cash"],"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":int(data["times_played_plinko"])+1,"times_played_slots":data["times_played_slots"],}
                     )
+                bet_slider.kill()
+                del moneybox
                 return
         listt=[]
         for x in range(500,1461,120):

@@ -4,23 +4,22 @@
 #Brett
 >>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
 # make the ui
+from main import *
 
-
-
+import pygame
+import pygame_widgets
 
 #button to go back
-
-
+class Button_main():
+    def button_mains():
+        print("HI")
 
 
 #button to raize bet
 
 
 
-
-#button to lowwer bet
-
-
+#Button to lesson bet
 
 
 #button to spin
@@ -139,7 +138,7 @@ def slots_main(win,username,password,file:helper.csv_file):
     [Sprite(win,"images/slots",0,100+offsetx,300+offset,(100,100),[100+offsetx,300+offset,0]),Sprite(win,"images/slots",1,175+offsetx,300+offset,(100,100),[175+offsetx,300+offset,0]),Sprite(win,"images/slots",2,250+offsetx,300+offset,(100,100),[250+offsetx,300+offset,0])],
     [Sprite(win,"images/slots",0,100+offsetx,400+offset,(100,100),[100+offsetx,400+offset,0]),Sprite(win,"images/slots",1,175+offsetx,400+offset,(100,100),[175+offsetx,400+offset,0]),Sprite(win,"images/slots",2,250+offsetx,400+offset,(100,100),[250+offsetx,400+offset,0])],
     ]
-    info=Sprite(win,"images/slot",1,600,20,(1000,1000),"")
+    info=Sprite(win,"images/slot",0,600,20,(1000,1000),"")
 
     cash=int(data["cash"])
 
@@ -285,6 +284,8 @@ def slots_main(win,username,password,file:helper.csv_file):
                         {"username": username, "password": password}, 
                         {"cash": cash,"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":data["times_played_plinko"],"times_played_slots":int(data["times_played_slots"])+1,}
                     )
+                bet_slider.kill()
+                del moneybox
                 return
         pygame_widgets.update(events)
         # 4: Update display

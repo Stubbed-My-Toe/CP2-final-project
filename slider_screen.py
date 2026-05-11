@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-#Liam
-=======
-#Brett
-
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
 #import moduals and init pygame
 #setup desplay
 #make the slidesr and output
@@ -58,7 +52,11 @@ class vertical_slider:
         if not self.output.selected:
             self.output.setText(str(self.get_val()))
         pygame_widgets.update(events)
-
+    def kill(self):
+        self.slider1.hide()
+        self.output.hide()
+        self.slider1.disable()
+        self.output.disable()
 
 
 class horizontal_slider:
