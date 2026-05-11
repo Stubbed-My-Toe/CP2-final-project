@@ -57,40 +57,24 @@
     # Return to main menu
     # Player can change bet again or start a new game
 import pygame
-import sys
-from cards import Deck, hand_total, short_name
 
-
-pygame.init()
-
-
-# window
-WIDTH = 1080
-HEIGHT = 1080
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Blackjack")
-clock = pygame.time.Clock()
-
-
-# colors
-WHITE  = (255, 255, 255)
-BLACK  = (0, 0, 0)
-GREEN  = (0, 180, 0)
-RED    = (200, 50, 50)
-GRAY   = (100, 100, 100)
-YELLOW = (220, 200, 50)
-DARK   = (30, 30, 30)
-BTNBG  = (60, 60, 60)
-
-
+     cards import Deck, hand_total, short_name
+import helper
 font_big   = pygame.font.SysFont("Arial", 28, bold=True)
 font_med   = pygame.font.SysFont("Arial", 20)
 font_small = pygame.font.SysFont("Arial", 16)
 
 
+# window
+WIDTH = 1080
+HEIGHT = 1080
+
+
+
 class Game:
-    def __init__(self):
-        self.cash = 25
+    def __init__(self,file:helper.csv_file,username,password):
+        self.data=helper.csv_get_data(file,{"username":username,"password":password})
+        self.cash = self.data["cash"]
         self.bet = 5
         self.state = "menu"  # menu, playing, result
         self.player = []
@@ -170,12 +154,12 @@ class Game:
 
 
 # helper to draw text
-def write(text, f, color, x, y):
+def write(text, f, color, x, y,screen):
     screen.blit(f.render(text, True, color), (x, y))
 
 
 # draws a button and returns the rect so we can click-check it
-def button(text, x, y, w=120, h=38, color=BTNBG):
+def button(text, x, y,screen, w=120, h=38, color=BTNBG):
     rect = pygame.Rect(x, y, w, h)
     pygame.draw.rect(screen, color, rect, border_radius=4)
     pygame.draw.rect(screen, GRAY, rect, 2, border_radius=4)
@@ -183,81 +167,98 @@ def button(text, x, y, w=120, h=38, color=BTNBG):
     screen.blit(label, (x + (w - label.get_width()) // 2, y + (h - label.get_height()) // 2))
     return rect
 
+def bj_main(screen,username,password,file:helper.csv_file):
+    
+    pygame.display.set_caption("Blackjack")
+    clock = pygame.time.Clock()
 
-game = Game()
-running = True
 
-while running:
-    screen.fill(DARK)
+    # colors
+    WHITE  = (255, 255, 255)
+    BLACK  = (0, 0, 0)
+    GREEN  = (0, 180, 0)
+    RED    = (200, 50, 50)
+    GRAY   = (100, 100, 100)
+    YELLOW = (220, 200, 50)
+    DARK   = (30, 30, 30)
+    BTNBG  = (60, 60, 60)
 
-    # top bar
-    write("BLACKJACK", font_big, WHITE, 20, 15)
-    write("Cash: $" + str(game.cash), font_med, GREEN, 20, 55)
-    write("Bet: $" + str(game.bet), font_med, YELLOW, 210, 55)
-
-    # buttons we might draw this frame (set to None if not shown)
-    btn_deal     = None
-    btn_hit      = None
-    btn_stand    = None
-    btn_bet_up   = None
-    btn_bet_down = None
-
-    if game.state in ("menu", "result"):
-        btn_deal     = button("DEAL", 20, 100, 120, 38, (0, 120, 0))
-        btn_bet_up   = button("+$5",  350, 48, 80, 32)
-        btn_bet_down = button("-$5",  440, 48, 80, 32)
-
-    if game.state in ("playing", "result"):
-        # dealer hand
-        write("Dealer:  " + game.hand_str(game.dealer), font_med, WHITE, 20, 150)
-        dval = hand_total(game.dealer)
-        dcol = RED if dval > 21 else WHITE
-        write("Total: " + str(dval), font_small, dcol, 20, 178)
-
-        # player hand
-        write("You:     " + game.hand_str(game.player), font_med, WHITE, 20, 225)
-        pval = hand_total(game.player)
-        pcol = RED if pval > 21 else (GREEN if pval == 21 else WHITE)
-        write("Total: " + str(pval), font_small, pcol, 20, 253)
-
-        write("Cards left: " + str(game.deck.cards_left()), font_small, GRAY, 20, 415)
-
-    if game.state == "playing":
-        btn_hit   = button("HIT",   20,  300, 100, 38)
-        btn_stand = button("STAND", 130, 300, 100, 38)
-
-    if game.state == "result":
-        if "+" in game.message:
-            mcol = GREEN
-        elif "-" in game.message:
-            mcol = RED
-        else:
-            mcol = YELLOW
-        write(game.message, font_small, mcol, 20, 310)
-
-    # event loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mx, my = event.pos
-
-            if btn_deal and btn_deal.collidepoint(mx, my):
-                game.new_round()
-            if btn_bet_up and btn_bet_up.collidepoint(mx, my):
-                game.change_bet(5)
-            if btn_bet_down and btn_bet_down.collidepoint(mx, my):
-                game.change_bet(-5)
-            if btn_hit and btn_hit.collidepoint(mx, my):
-                game.hit()
-            if btn_stand and btn_stand.collidepoint(mx, my):
-                game.stand()
-
-    pygame.display.flip()
-    clock.tick(30)
-
-pygame.quit()
-sys.exit()
 
     
+    game = Game()
+    running = True
+
+    while running:
+        screen.fill(DARK)
+
+        # top bar
+        write("BLACKJACK", font_big, WHITE, 20, 15)
+        write("Cash: $" + str(game.cash), font_med, GREEN, 20, 55)
+        write("Bet: $" + str(game.bet), font_med, YELLOW, 210, 55)
+
+        # buttons we might draw this frame (set to None if not shown)
+        btn_deal     = None
+        btn_hit      = None
+        btn_stand    = None
+        btn_bet_up   = None
+        btn_bet_down = None
+
+        if game.state in ("menu", "result"):
+            btn_deal     = button("DEAL", 20, 100, 120, 38, (0, 120, 0))
+            btn_bet_up   = button("+$5",  350, 48, 80, 32)
+            btn_bet_down = button("-$5",  440, 48, 80, 32)
+
+        if game.state in ("playing", "result"):
+            # dealer hand
+            write("Dealer:  " + game.hand_str(game.dealer), font_med, WHITE, 20, 150)
+            dval = hand_total(game.dealer)
+            dcol = RED if dval > 21 else WHITE
+            write("Total: " + str(dval), font_small, dcol, 20, 178)
+
+            # player hand
+            write("You:     " + game.hand_str(game.player), font_med, WHITE, 20, 225)
+            pval = hand_total(game.player)
+            pcol = RED if pval > 21 else (GREEN if pval == 21 else WHITE)
+            write("Total: " + str(pval), font_small, pcol, 20, 253)
+
+            write("Cards left: " + str(game.deck.cards_left()), font_small, GRAY, 20, 415)
+
+        if game.state == "playing":
+            btn_hit   = button("HIT",   20,  300, 100, 38)
+            btn_stand = button("STAND", 130, 300, 100, 38)
+
+        if game.state == "result":
+            if "+" in game.message:
+                mcol = GREEN
+            elif "-" in game.message:
+                mcol = RED
+            else:
+                mcol = YELLOW
+            write(game.message, font_small, mcol, 20, 310)
+
+        # event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = event.pos
+
+                if btn_deal and btn_deal.collidepoint(mx, my):
+                    game.new_round()
+                if btn_bet_up and btn_bet_up.collidepoint(mx, my):
+                    game.change_bet(5)
+                if btn_bet_down and btn_bet_down.collidepoint(mx, my):
+                    game.change_bet(-5)
+                if btn_hit and btn_hit.collidepoint(mx, my):
+                    game.hit()
+                if btn_stand and btn_stand.collidepoint(mx, my):
+                    game.stand()
+
+        pygame.display.flip()
+        clock.tick(30)
+
+    pygame.quit()
+    sys.exit()
+
+        

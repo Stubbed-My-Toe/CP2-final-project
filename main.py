@@ -19,6 +19,7 @@ import plinko
 import hashlib
 #import Pygame_file
 import pygame_widgets
+import time
 def error():
     raise SystemExit(
     "\nCRITICAL_ERROR: Load-Bearing Coconut missing!\n"
@@ -41,8 +42,11 @@ def checker(file,user,passer):
     try:
         data=helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()})
     except:
-        data= "bad"
-
+        makeer(file,user.getText(),passer.getText())
+def makeer(file:helper.csv_file,user,passer):
+    global data
+    file.add([user,passer,200,0,0,0,0])
+    data=data=helper.csv_get_data(file,{"username":user,"password":passer})
 def main():
     global data
     pygame.init()
@@ -52,12 +56,8 @@ def main():
     file=helper.csv_file("data_storage.csv")
     usernameb = pygame_widgets.textbox.TextBox(win, 100, 100, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="username")
     passwordb = pygame_widgets.textbox.TextBox(win, 100, 160, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="password")
-    usernameb.onSubmit = checker
-    usernameb.onSubmitParams = (file, usernameb, passwordb)
-
-    passwordb.onSubmit = checker
-    passwordb.onSubmitParams = (file, usernameb, passwordb)
     passwordb.isPassword = True
+    make_acount=button.button("login/make account",30,250,300,50,(100,100,100),(100,100,200))
     return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
     dice_btn=button.button("dice (WIP)",30,90,300,50,(100,100,100),(100,100,200))
     slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
@@ -74,7 +74,11 @@ def main():
         for event in events:
             if return_button.is_clicked(event):
                 quit()
+            if make_acount.is_clicked(event):
+                makeer(file,usernameb.getText(),passwordb.getText())
+                time.sleep(1)
         if data==None:
+            make_acount.draw(win)
             pass
         else:
             if data=="bad":
