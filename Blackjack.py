@@ -58,7 +58,7 @@
     # Player can change bet again or start a new game
 import pygame
 import sys
-from Countcards import Deck, hand_total, short_name
+from cards import Deck, hand_total, short_name
 
 
 pygame.init()
