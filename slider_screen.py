@@ -1,3 +1,5 @@
+#Brett
+
 #import moduals and init pygame
 #setup desplay
 #make the slidesr and output
@@ -20,19 +22,11 @@ win = pygame.display.set_mode((1000, 600))
 #make the slidesr and output
 
 class vertical_slider:
-<<<<<<< HEAD
-    def __init__(self, multiplyer, win, slider1_cords, box_cords):
-        self.multiplyer = multiplyer
-        #setup the slider1 from the pygame wigits
-        self.slider1 = Slider(win, *slider1_cords, min=0, max=100*multiplyer, step=1)
-        self.output = TextBox(win, *box_cords, fontSize=20)
-=======
     def __init__(self, multiplyer, win, slider1_cords, box_cords,w_h):
         self.multiplyer = multiplyer
         #setup the slider1 from the pygame wigits
         self.slider1 = Slider(win, slider1_cords[0],slider1_cords[0],w_h[0],w_h[1], min=0, max=100*multiplyer, step=1)
         self.output = TextBox(win, box_cords[0],box_cords[1],100,100, fontSize=20)
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
         # Link the textbox submission to the update method
         self.output.onSubmit = self.update_slider1
     #update the slider1 if changed
@@ -63,11 +57,7 @@ class horizontal_slider:
     def __init__(self, multiplyer, win, slider_cords, box_cords):
         self.multiplyer = multiplyer
         #setup the slider from the pygame wigits
-<<<<<<< HEAD
-        self.slider = Slider(win, *slider_cords, min=0, max=100*multiplyer, step=1)
-=======
         self.slider = Slider(win, *slider_cords,100,100, min=0, max=100*multiplyer, step=1)
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
         self.output = TextBox(win, *box_cords, fontSize=20)
         # Link the textbox submission to the update method
         self.output.onSubmit = self.update_slider

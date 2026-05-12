@@ -1,4 +1,3 @@
-#Brett
 #from all files import all
 
 #display 3 buttons
@@ -6,20 +5,22 @@
     #one to have a help button
     #one to exit the game
 import pygame
+import csv
 import button
-#import Dice
+import Dice
 #import Blackjack
 import helper
 import slots
-#import mines
+import mines
 import plinko
-#import slider_screen
-#import cards
-#import deck
-#import installer
+import slider_screen
+import cards
+import deck
+import installer
 import hashlib
-#import Pygame_file
+import Pygame_file
 import pygame_widgets
+import time
 def error():
     raise SystemExit(
     "\nCRITICAL_ERROR: Load-Bearing Coconut missing!\n"
@@ -42,8 +43,12 @@ def checker(file,user,passer):
     try:
         data=helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()})
     except:
-        data= "bad"
-
+        makeer(file,user.getText(),passer.getText())
+def makeer(file:helper.csv_file,user,passer):
+    global data
+    if len(user)>0 or len(passer)>0:
+        file.add([user,passer,200,0,0,0,0])
+        data=data=helper.csv_get_data(file,{"username":user,"password":passer})
 def main():
     global data
     pygame.init()
@@ -53,12 +58,8 @@ def main():
     file=helper.csv_file("data_storage.csv")
     usernameb = pygame_widgets.textbox.TextBox(win, 100, 100, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="username")
     passwordb = pygame_widgets.textbox.TextBox(win, 100, 160, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="password")
-    usernameb.onSubmit = checker
-    usernameb.onSubmitParams = (file, usernameb, passwordb)
-
-    passwordb.onSubmit = checker
-    passwordb.onSubmitParams = (file, usernameb, passwordb)
     passwordb.isPassword = True
+    make_acount=button.button("login/make account",30,250,300,50,(100,100,100),(100,100,200))
     return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
     dice_btn=button.button("dice (WIP)",30,90,300,50,(100,100,100),(100,100,200))
     slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
@@ -75,13 +76,24 @@ def main():
         for event in events:
             if return_button.is_clicked(event):
                 quit()
+            if make_acount.is_clicked(event):
+                makeer(file,usernameb.getText(),passwordb.getText())
+                tic=20
+            try:
+                if data["username"]=="test" and data["password"]=="<>":
+                    casher=button.button("add cash",30,390,300,50,(100,100,100),(100,100,200))
+                    casherer=button.button("minus cash cash",30,390,300,50,(100,100,100),(100,100,200))
+            except:
+                pass
         if data==None:
+            make_acount.draw(win)
             pass
         else:
+            tic-=1
             if data=="bad":
                 data=None
                 continue
-            else:
+            elif tic<0:
                 moneybox.setText(f"money: {data["cash"]}")
                 dice_btn.draw(win)
                 slots_btn.draw(win)
@@ -90,6 +102,9 @@ def main():
                 mines_btn.draw(win)
                 usernameb.hide()
                 passwordb.hide()
+                if data["username"]=="test" and data["password"]=="<>":
+                    casher.draw(win)
+                    casherer.draw(win)
                 for event in events:
                     if dice_btn.is_clicked(event):
                         moneybox.hide()
@@ -99,7 +114,7 @@ def main():
                         slots.slots_main(win,data["username"],data["password"],file)
                     if black_jack.is_clicked(event):
                         moneybox.hide()
-                        pass
+                        Blackjack.bj_main(win,data["username"],data["password"],file)
                     if plinko_btn.is_clicked(event):
                         moneybox.hide()
                         plinko.plinko_main(win,data["username"],data["password"],file)
@@ -107,6 +122,10 @@ def main():
                         moneybox.hide()
                         pass
                     moneybox.show()
+                    if data["username"]=="test" and data["password"]=="<>":
+                        if casherer.is_clicked(event):
+                            pass
+
         pygame_widgets.update(events)
                 
             

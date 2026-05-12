@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 #Liam
-=======
+
 #Brett
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
+
 # make the ui
 from main import *
 

@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 #Commented pandas because it is not being used yet 
 #import pandas
 
@@ -7,18 +6,15 @@
 #pygame
 
 #display mines window
-<<<<<<< HEAD
 #display 5x5 grid
 #ask user to enter bet amount (when the bet amount is conrimed and the game starts, the bet amount is subtracted fro mthe ballance)
 #ask user to choose amount of bombs(1-24)
 #else the defalt is 3
-=======
 
 #display 5x5 grid
 #ask user to enter bet amount (when the bet amount is confirmed and the game starts, the bet amount is subtracted from the balance)
 #ask user to choose amount of bombs(1-24)
 #else the default is 3
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
 #bomb amount changes multiplier for each square correctly guessed, scaling with the amount of bombs placed on the field, 1 being the lowest ending multiplier, and 24 being the highest
 
 #GAME
@@ -30,9 +26,9 @@
        #When bomb input and bet is put in, put that many mines on the field as blank tiles randomly, and the multipliers as blank tiles as well. 
         #have users click tiles, if safe, turn tile blue, and increase multiplier. 
         #if tile turns red, it's a bomb, and it will say game over, end the game
-<<<<<<< HEAD
+
         #The Game resets and is playable again and the player can choose to go back home or play different games on the side bar
-=======
+
         #The Game resets and is playable again and the player can choose to go back home or play different games on the side bar
 
 

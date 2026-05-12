@@ -1,3 +1,6 @@
-username,password,cash,times_played_blackjack,times_played_dice,times_played_plinko,times_played_slots,
-bob1,<>,107650,0,0,13,21,
-bob2,<>,1,0,0,0,0,
+username,password,cash,times_played_blackjack,times_played_dice,times_played_plinko,times_played_slots
+bob1,<>,107650,0,0,13,21
+bob2,<>,1,0,0,0,0
+B,d,200,0,0,2,2
+B,d,200,0,0,0,0
+B,d,200,0,0,0,0

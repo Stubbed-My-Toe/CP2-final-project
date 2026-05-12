@@ -1,50 +1,109 @@
-#bring in pygame
+#Brett
+
+#import moduals and init pygame
+#setup desplay
+#make the slidesr and output
+#setup the slider from the pygame wigits
+# Link the textbox submission to the update method
+#update the slider if changed
+#return the val of the slider
+# Sync textbox with slider when not typing
+
+
+
+import pygame_widgets
 import pygame
-
-
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
+#import moduals and init pygame
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
-font = pygame.font.SysFont("Arial", 40)
+#setup desplay
+win = pygame.display.set_mode((1000, 600))
+#make the slidesr and output
 
-# 1. Define button properties
-button_rect = pygame.Rect(300, 250, 200, 50) # x, y, width, height
-button_color = (0, 128, 255) # Blue
+class vertical_slider:
+    def __init__(self, multiplyer, win, slider1_cords, box_cords,w_h):
+        self.multiplyer = multiplyer
+        #setup the slider1 from the pygame wigits
+        self.slider1 = Slider(win, slider1_cords[0],slider1_cords[0],w_h[0],w_h[1], min=0, max=100*multiplyer, step=1)
+        self.output = TextBox(win, box_cords[0],box_cords[1],100,100, fontSize=20)
+        # Link the textbox submission to the update method
+        self.output.onSubmit = self.update_slider1
+    #update the slider1 if changed
+    def update_slider1(self):
+        try:
+            typed_value = int(self.output.getText())
+            if 0 <= typed_value <= 100 * self.multiplyer:
+                self.slider1.setValue(typed_value)
+        except ValueError:
+            pass
+    #return the val of the slider1
+    def get_val(self):
+        return self.slider1.getValue()
 
-def draw_button(text, rect, color):
-    pygame.draw.rect(screen, color, rect)
-    text_surf = font.render(text, True, (255, 255, 255))
-    text_rect = text_surf.get_rect(center=rect.center)
-    screen.blit(text_surf, text_rect)
+    def update_ui(self, events):
+        # Sync textbox with slider1 when not typing
+        if not self.output.selected:
+            self.output.setText(str(self.get_val()))
+        pygame_widgets.update(events)
+    def kill(self):
+        self.slider1.hide()
+        self.output.hide()
+        self.slider1.disable()
+        self.output.disable()
 
-running = True
-while running:
-    mouse_pos = pygame.mouse.get_pos()
-    
-    for event in pygame.event.get():
-<<<<<<< HEAD
-        if event.type == pygame.QUIT:
-            running = False
-        
-        # 2. Check for click
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if button_rect.collidepoint(mouse_pos):
-                print("Start Game Clicked!")
-                from slider_screen import *
-                horizontal_slider()
-=======
-        if button_rect.collidepoint(mouse_pos):
-            print("Start Game Clicked!")
-            from slider_screen import *
-            slider_screen()
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
-                
 
-    screen.fill((30, 30, 30))
-    
-    # 3. Hover effect (optional)
-    current_color = (0, 200, 255) if button_rect.collidepoint(mouse_pos) else button_color
-    draw_button("START", button_rect, current_color)
-    
-    pygame.display.flip()
+class horizontal_slider:
+    def __init__(self, multiplyer, win, slider_cords, box_cords):
+        self.multiplyer = multiplyer
+        #setup the slider from the pygame wigits
+        self.slider = Slider(win, *slider_cords,100,100, min=0, max=100*multiplyer, step=1)
+        self.output = TextBox(win, *box_cords, fontSize=20)
+        # Link the textbox submission to the update method
+        self.output.onSubmit = self.update_slider
+    #update the slider if changed
+    def update_slider(self):
+        try:
+            typed_value = int(self.output.getText())
+            if 0 <= typed_value <= 100 * self.multiplyer:
+                self.slider.setValue(typed_value)
+        except ValueError:
+            pass
+    #return the val of the slider
+    def get_val(self):
+        return self.slider.getValue()
 
-pygame.quit()
+    def update_ui(self, events):
+        # Sync textbox with slider when not typing
+        if not self.output.selected:
+            self.output.setText(str(self.get_val()))
+        pygame_widgets.update(events)
+
+if "__main__"==__name__:
+    # example on how to use
+    #make object of class
+    my_slider = horizontal_slider(2, win, [100, 100, 800, 40], [475, 200, 50, 50])
+    #make clock
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        #get pygame events
+        events = pygame.event.get()
+        #if there is an event to quit then quit
+        for event in events:
+            if event.type == pygame.QUIT:
+                run = False
+        win.fill((255, 255, 255))
+
+        # Get the value like this
+        current_value = my_slider.get_val()
+        #symple example of useing val
+        win.fill((200, 255, current_value))
+
+        # Update and draw widgets
+        my_slider.update_ui(events)
+        #update the display and clock tick
+        pygame.display.update()
+        clock.tick(60)
+
+    pygame.quit()

@@ -27,9 +27,7 @@
 # if the user clicked the text box then alow the user to change what is in it
 # if the uesr clicks drop chip then:
 # simulate the chip untill it hits a score thing
-<<<<<<< HEAD
 # add the score*bet to amount of cash
-=======
 # add the score*bet to amount of cash
 import pygame
 import pymunk
@@ -227,4 +225,3 @@ while running:
     screen.blit(level_surf, (270, 350))  # Bottom Center
 
     pygame.display.flip()"""
->>>>>>> 6b88b0f4b55b9442e07fd4dda3719bca84509171
