@@ -159,7 +159,7 @@ def slots_main(win,username,password,file:helper.csv_file):
         chaching=pygame.mixer.Sound("sounds/u_oepgi4ep3v-som_matricula-464025.mp3")
     except:
         pass
-    whegts=[10, 25, 45, 65, 80, 92, 100] 
+    whegts=[15, 35, 55, 75, 85, 95, 100] 
     multiplyer=[3,5,7,15,30,70,200]
     #multiplyer=[1000,1000,1000,1000,1000,1000,1000]
     costumes=[6,5,4,3,2,1,0]
@@ -293,5 +293,5 @@ if __name__=="__main__":
     pygame.init()
     win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     file=helper.csv_file("data_storage.csv")
-    slots_main(win,"text","<NULL>",file)
+    slots_main(win,"test","<NULL>",file)
     pygame.quit()
