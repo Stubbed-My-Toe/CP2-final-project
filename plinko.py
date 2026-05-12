@@ -32,6 +32,7 @@ import pymunk
 import pymunk.pygame_util
 import math
 import random
+import trandom
 import helper
 import time
 from slider_screen import vertical_slider
@@ -91,6 +92,7 @@ def passing():
 last_play_time = 0
 COOLDOWN = 1
 def plinko_main(win,username,password,file:helper.csv_file):
+    rand=trandom.alternate_random(1,100000000)
     data=helper.csv_get_data(file,{"username":username,"password":password})
     font = pygame.font.SysFont('Arial', 30)
     super = pygame.font.SysFont('Arial', 500)
@@ -160,6 +162,7 @@ def plinko_main(win,username,password,file:helper.csv_file):
             if (drop.is_clicked(event) or keys[pygame.K_a]) and not game_state['dropped']:
                 if bet <= monney:
                     game_state['cash'] -= bet
+                    random.seed(next(rand))
                     x, y = 1000 + random.uniform(-1, 1), 160
                     chips.append(create_chip(space, x, y, bet))
                     game_state['dropped'] = True

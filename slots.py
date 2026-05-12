@@ -61,6 +61,7 @@ import pygame_widgets
 
 
 import pygame
+import trandom
 import random
 from pathlib import Path
 import helper
@@ -70,6 +71,8 @@ from button import button
 
 
 def weghted_random(l1,wheghts):
+   rand=trandom.alternate_random(1,1000000000)
+   random.seed(next(rand))
    rnum=random.uniform(0,100)
    pnum=0
    for num,x in enumerate(wheghts):
@@ -290,5 +293,5 @@ if __name__=="__main__":
     pygame.init()
     win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     file=helper.csv_file("data_storage.csv")
-    slots_main(win,"bob1","<>",file)
+    slots_main(win,"text","<NULL>",file)
     pygame.quit()

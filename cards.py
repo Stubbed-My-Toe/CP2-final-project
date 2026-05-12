@@ -1,11 +1,13 @@
 # ...existing code...
 import random
-
+import trandom
 class Deck:
     def __init__(self):
+        self.rand=trandom.alternate_random(1,100000000)
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
         self.cards = [f"{rank} of {suit}" for suit in suits for rank in ranks]
+        random.seed(next(self.rand))
         random.shuffle(self.cards)
 
     def draw(self):

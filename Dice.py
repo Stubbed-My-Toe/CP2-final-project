@@ -1,63 +1,176 @@
 #Brett
-#Pseudocode for dice
+# make the ui
+from main import *
 
-import pygame as py
-import pygame_widgets as pw
-
-#from slider screen bring in all
-from slider_screen import *
-#function for entering bet amount
-
-    #display how much money do you want to place 
-    #user is brought to the slider screen.
-    #user may change the bet amount or the slider amount or just run the game
-
-#function for winning the game
-    #if the computer is tied with the user then the user wins
-        #amount is multiplied by the slider amount
-    #if the user won the game
-        #amount is multiplied by the slider amount
-    #if the user lost the game
-        #amount is not returned
-
-#funtion for playing the game
-    #while not false
-        #call function entering bet amount
-        #user press the run button.
-            #call function winning the game
 import pygame
-import subprocess
-import sys
+import pygame_widgets
 
-# Initialize Pygame
-pygame.init()
-screen = pygame.display.set_mode((400, 300))
-font = pygame.font.SysFont('Arial', 32)
+#button to go back
 
-# Button settings
-button_rect = pygame.Rect(150, 120, 100, 50)
-button_color = (0, 200, 0)  # Green
-text_surf = font.render('Run', True, (255, 255, 255))
 
-running = True
-while running:
-    screen.fill((30, 30, 30)) # Dark background
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Check if the user clicked the button area
-            if button_rect.collidepoint(event.pos):
-                print("Running slider.py...")
-                # subprocess.Popen runs the file using the current Python interpreter
-                subprocess.Popen([sys.executable, 'slider.py'])
 
-    # Draw the button and text
-    pygame.draw.rect(screen, button_color, button_rect)
-    screen.blit(text_surf, (button_rect.x + 22, button_rect.y + 10))
-    
-    pygame.display.flip()
+#button to raize bet
 
-pygame.quit()
+
+
+#Button to lesson bet
+
+
+#button to spin
+
+
+
+
+#lable for how much cash the user has
+
+
+
+
+#text box for the users bet that they can click on and change
+
+
+
+
+#if the user clicks go back then go back to main menu
+
+
+
+
+#if the user clicks lowwer bet lower the bet
+
+
+#if the user clicked raise bet raise the bet
+
+
+# if the user clicked the text box then alow the user to change what is in it
+
+
+
+
+# if the uesr clicks spin then do the spinning animation and pick 3 random numbers
+
+
+
+
+# if the numbers (put in a list) are in a list of lists then return the dictionary return of that combo
+
+
+
+
+# mulitply the bet by the amount and add that to user amount of cash
+
+
+import pygame
+import trandom
+import random
+from pathlib import Path
+import helper
+from slider_screen import vertical_slider
+import pygame_widgets
+from button import button
+
+
+def weghted_random(l1,wheghts):
+   rand=trandom.alternate_random(1,1000000000)
+   random.seed(next(rand))
+   rnum=random.uniform(0,100)
+   pnum=0
+   for num,x in enumerate(wheghts):
+       if x>rnum>pnum:
+           return l1[num]
+       pnum=x
+
+
+class Sprite:
+   def __init__(self,win,path_to_images:Path,starting_image:int,x:float,y:float,size:tuple,data):
+       self.fPath=Path(path_to_images)
+       self.ims = [
+           pygame.transform.scale(pygame.image.load(str(f)).convert_alpha(),size)
+           for f in self.fPath.iterdir() if f.is_file()]      
+       self.cim=self.ims[starting_image]
+       self.costumee=starting_image
+       self.win=win
+       self.x=x
+       self.y=y
+       self.data=data
+   def render(self):
+       self.win.blit(self.cim, (self.x, self.y))
+   def move(self,x,y):
+       self.x+=x
+       self.y+=y
+   def teleport(self,x,y):
+       self.x=x
+       self.y=y
+   def costume(self,image:int):
+       self.costumee=image
+       self.cim=self.ims[image]
+   def get_pos(self,choise=""):
+       if choise=="":
+           return self.x,self.y
+       elif choise=="x":
+           return self.x
+       elif choise=="y":
+           return self.y
+   def stored_data(self):
+       return self.data
+   def change_data(self,new_data):
+       self.data=new_data
+   def get_costume(self):
+       return self.costumee
+
+
+
+
+def passing():
+    pass
+
+
+
+def slots_main(win,username,password,file:helper.csv_file):
+    data=helper.csv_get_data(file,{"username":username,"password":password})
+    offsetx=0
+    offset=0
+    face
+    info=Sprite(win,"images/slot",0,600,20,(1000,1000),"")
+
+    cash=int(data["cash"])
+    stoped=True
+    Clock=pygame.time.Clock()
+    costumes=[5,4,3,2,1,0]
+    bet_slider=vertical_slider(3,win,[600,500],[500,450],[300,10])
+    moneybox = pygame_widgets.textbox.TextBox(win, 1000, 100, 800, 80, fontSize=50,
+                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
+                  onSubmit=passing, radius=10, borderThickness=5)
+    super = pygame.font.SysFont('Arial', 500)
+    bruh = super.render('bruh', True, (0, 0, 0))
+    returne=button("return",300,600,200,40,(100,100,100),(100,100,200))
+    drop=button("roll",300,650,200,40,(100,100,100),(100,100,200))
+    keep=button("keep",300,700,200,40,(100,100,100),(100,100,200))
+    while True:
+        events=pygame.event.get()
+        win.fill((255, 255, 255)) # Clear screen
+        # 3: Draw (blit) image at coordinates (x, y)
+        for event in events:
+            if drop.is_clicked(event):
+                pass
+            if drop.is_clicked(event):
+               pass 
+            if returne.is_clicked(event):
+                file.update_row(
+                        {"username": username, "password": password}, 
+                        {"cash": cash,"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":data["times_played_plinko"],"times_played_slots":int(data["times_played_slots"])+1,}
+                    )
+                bet_slider.kill()
+                del moneybox
+                return
+        pygame_widgets.update(events)
+        # 4: Update display
+        pygame.display.flip()
+        Clock.tick(60)
+       
+if __name__=="__main__":
+    pygame.init()
+    win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    file=helper.csv_file("data_storage.csv")
+    slots_main(win,"text","<NULL>",file)
+    pygame.quit()

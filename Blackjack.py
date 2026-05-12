@@ -57,13 +57,17 @@
     # Return to main menu
     # Player can change bet again or start a new game
 import pygame
-
-     cards import Deck, hand_total, short_name
+from cards import Deck, hand_total, short_name
 import helper
-font_big   = pygame.font.SysFont("Arial", 28, bold=True)
-font_med   = pygame.font.SysFont("Arial", 20)
-font_small = pygame.font.SysFont("Arial", 16)
-
+import time
+WHITE  = (255, 255, 255)
+BLACK  = (0, 0, 0)
+GREEN  = (0, 180, 0)
+RED    = (200, 50, 50)
+GRAY   = (100, 100, 100)
+YELLOW = (220, 200, 50)
+DARK   = (30, 30, 30)
+BTNBG  = (60, 60, 60)
 
 # window
 WIDTH = 1080
@@ -74,7 +78,7 @@ HEIGHT = 1080
 class Game:
     def __init__(self,file:helper.csv_file,username,password):
         self.data=helper.csv_get_data(file,{"username":username,"password":password})
-        self.cash = self.data["cash"]
+        self.cash = int(self.data["cash"])
         self.bet = 5
         self.state = "menu"  # menu, playing, result
         self.player = []
@@ -166,35 +170,30 @@ def button(text, x, y,screen, w=120, h=38, color=BTNBG):
     label = font_med.render(text, True, WHITE)
     screen.blit(label, (x + (w - label.get_width()) // 2, y + (h - label.get_height()) // 2))
     return rect
-
 def bj_main(screen,username,password,file:helper.csv_file):
-    
+    delay=0
+    global font_big
+    global font_med
+    global font_small
+    font_big   = pygame.font.SysFont("Arial", 28, bold=True)
+    font_med   = pygame.font.SysFont("Arial", 20)
+    font_small = pygame.font.SysFont("Arial", 16)
+    data=file
     pygame.display.set_caption("Blackjack")
     clock = pygame.time.Clock()
 
-
-    # colors
-    WHITE  = (255, 255, 255)
-    BLACK  = (0, 0, 0)
-    GREEN  = (0, 180, 0)
-    RED    = (200, 50, 50)
-    GRAY   = (100, 100, 100)
-    YELLOW = (220, 200, 50)
-    DARK   = (30, 30, 30)
-    BTNBG  = (60, 60, 60)
-
-
+    tic=0
     
-    game = Game()
+    game = Game(file,username,password)
     running = True
 
     while running:
         screen.fill(DARK)
 
         # top bar
-        write("BLACKJACK", font_big, WHITE, 20, 15)
-        write("Cash: $" + str(game.cash), font_med, GREEN, 20, 55)
-        write("Bet: $" + str(game.bet), font_med, YELLOW, 210, 55)
+        write("BLACKJACK", font_big, WHITE, 20, 15,screen)
+        write("Cash: $" + str(game.cash), font_med, GREEN, 20, 55,screen)
+        write("Bet: $" + str(game.bet), font_med, YELLOW, 210, 55,screen)
 
         # buttons we might draw this frame (set to None if not shown)
         btn_deal     = None
@@ -204,28 +203,29 @@ def bj_main(screen,username,password,file:helper.csv_file):
         btn_bet_down = None
 
         if game.state in ("menu", "result"):
-            btn_deal     = button("DEAL", 20, 100, 120, 38, (0, 120, 0))
-            btn_bet_up   = button("+$5",  350, 48, 80, 32)
-            btn_bet_down = button("-$5",  440, 48, 80, 32)
+            btn_deal     = button("DEAL", 20, 100,screen, 120, 38, (0, 120, 0))
+            btn_bet_up   = button("+$5",  350, 48,screen, 80, 32)
+            btn_bet_down = button("-$5",  440, 48,screen, 80, 32)
+            returner= button("return",530,48,screen,80,32)
 
         if game.state in ("playing", "result"):
             # dealer hand
-            write("Dealer:  " + game.hand_str(game.dealer), font_med, WHITE, 20, 150)
+            write("Dealer:  " + game.hand_str(game.dealer), font_med, WHITE, 20, 150,screen)
             dval = hand_total(game.dealer)
             dcol = RED if dval > 21 else WHITE
-            write("Total: " + str(dval), font_small, dcol, 20, 178)
+            write("Total: " + str(dval), font_small, dcol, 20, 178,screen)
 
             # player hand
-            write("You:     " + game.hand_str(game.player), font_med, WHITE, 20, 225)
+            write("You:     " + game.hand_str(game.player), font_med, WHITE, 20, 225,screen)
             pval = hand_total(game.player)
             pcol = RED if pval > 21 else (GREEN if pval == 21 else WHITE)
-            write("Total: " + str(pval), font_small, pcol, 20, 253)
+            write("Total: " + str(pval), font_small, pcol, 20, 253,screen)
 
-            write("Cards left: " + str(game.deck.cards_left()), font_small, GRAY, 20, 415)
+            write("Cards left: " + str(game.deck.cards_left()), font_small, GRAY, 20, 415,screen)
 
         if game.state == "playing":
-            btn_hit   = button("HIT",   20,  300, 100, 38)
-            btn_stand = button("STAND", 130, 300, 100, 38)
+            btn_hit   = button("HIT",   20,  300,screen, 100, 38)
+            btn_stand = button("STAND", 130, 300,screen, 100, 38)
 
         if game.state == "result":
             if "+" in game.message:
@@ -234,27 +234,52 @@ def bj_main(screen,username,password,file:helper.csv_file):
                 mcol = RED
             else:
                 mcol = YELLOW
-            write(game.message, font_small, mcol, 20, 310)
+            write(game.message, font_small, mcol, 20, 310,screen)
 
         # event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
 
                 if btn_deal and btn_deal.collidepoint(mx, my):
                     game.new_round()
-                if btn_bet_up and btn_bet_up.collidepoint(mx, my):
-                    game.change_bet(5)
-                if btn_bet_down and btn_bet_down.collidepoint(mx, my):
-                    game.change_bet(-5)
                 if btn_hit and btn_hit.collidepoint(mx, my):
                     game.hit()
                 if btn_stand and btn_stand.collidepoint(mx, my):
                     game.stand()
-
+                if returner and returner.collidepoint(mx,my):
+                    stats = game.data 
+                    file.update_row(
+                        {"username": username, "password": password},
+                        {
+                            "cash": game.cash,
+                            "times_played_blackjack": int(stats["times_played_blackjack"]) + 1,
+                            "times_played_dice": stats["times_played_dice"],
+                            "times_played_plinko": stats["times_played_plinko"],
+                            "times_played_slots": stats["times_played_slots"],
+                        }
+                    )
+                    return
+                
+        if pygame.mouse.get_pressed()[0] and tic<0:
+            tic=max(5-(max(delay,8))/20,0)
+            mx, my = pygame.mouse.get_pos()
+            if btn_bet_up and btn_bet_up.collidepoint(mx, my):
+                if delay>250:
+                    game.change_bet(5)
+                game.change_bet(5)
+                delay+=1
+                print(tic,delay)
+            if btn_bet_down and btn_bet_down.collidepoint(mx, my):
+                if delay>250:
+                    game.change_bet(-5)
+                game.change_bet(-5)
+                delay+=1
+        elif not(pygame.mouse.get_pressed()[0]):
+            delay=0
+        tic-=1
         pygame.display.flip()
         clock.tick(30)
 
@@ -262,3 +287,9 @@ def bj_main(screen,username,password,file:helper.csv_file):
     sys.exit()
 
         
+if __name__=="__main__":
+    pygame.init()
+    pygame.mixer.init(0)
+    win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    file=helper.csv_file("data_storage.csv")
+    bj_main(win,"test","<NULL>",file)
