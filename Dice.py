@@ -119,39 +119,45 @@ class Sprite:
        return self.costumee
 
 def score(dice:list):
+    removal=[]
     counts = Counter(dice)
     score = 0
-    if len(counts) == 6:
-        return 1500
+    if len(counts) == 6:#stragit
+        return 1500,[0,1,2,3,4,5]
     occurrences = sorted(counts.values(), reverse=True)
-    if occurrences == [6]: return 3000
-    if occurrences == [5, 1]: return 2000
-    if occurrences == [4, 2]: return 2000
-    if occurrences == [3, 3]: return 2500
-    if occurrences == [2, 2, 2]: return 1500
-    if occurrences[0] == 4:
+    if occurrences == [6]: return 3000,[0,1,2,3,4,5]#all 6
+    if occurrences == [5, 1]: return 2000,[x for x,count in counts.items() if count==5][0]#5 of a kind
+    if occurrences == [4, 2]: return 2000,[0,1,2,3,4,5]#set of 4 +set of 2
+    if occurrences == [3, 3]: return 2500,[x for x,count in counts.items() if count==3]
+    if occurrences == [2, 2, 2]: return 1500,[0,1,2,3,4,5]#set of 2 +set of 2+set of 2
+    if occurrences[0] == 4:#set of 4
         score += 1000
         for num in counts:
-            if counts[num] == 4: counts[num] = 0
-    for num in range(1, 7):
-        if counts[num] >= 3:
+            if counts[num] == 4: 
+                counts[num] = 0
+                removal.append(num)
+    for num in range(1, 7):#set of 3
+        if counts[num] == 3:
             score += 300 if num == 1 else num * 100
-            counts[num] -= 3
-    score += counts[1] * 100
-    score += counts[5] * 50
+            removal.append(num)
+    if counts[1]<2:
+        score += counts[1] * 100#1
+    if counts[1]:
+        removal.append(0)
+    if counts[5]<2:
+        score += counts[5] * 50#5
+    if counts[5]:
+        removal.append(4)
     
-    return score
+    return score,removal
 
 def passing():
     pass
-
-
-
 def dice_main(win,username,password,file:helper.csv_file):
     data=helper.csv_get_data(file,{"username":username,"password":password})
     offsetx=0
     offset=0
-    face=[Sprite(win,"images/dice",0,100,20,(100,100),""),Sprite(win,"images/dice",0,100,130,(100,100),""),Sprite(win,"images/dice",0,100,240,(100,100),""),Sprite(win,"images/dice",0,100,350,(100,100),""),Sprite(win,"images/dice",0,100,460,(100,100),""),Sprite(win,"images/dice",0,100,570,(100,100),"")]
+    face=[Sprite(win,"images/dice",0,100,20,(100,100),True),Sprite(win,"images/dice",0,100,130,(100,100),True),Sprite(win,"images/dice",0,100,240,(100,100),True),Sprite(win,"images/dice",0,100,350,(100,100),True),Sprite(win,"images/dice",0,100,460,(100,100),True),Sprite(win,"images/dice",0,100,570,(100,100),True)]
     info=Sprite(win,"images/diccc",0,600,20,(1000,1000),"")
     tic=0
     cash=int(data["cash"])
@@ -167,11 +173,13 @@ def dice_main(win,username,password,file:helper.csv_file):
                   onSubmit=passing, radius=10, borderThickness=5)
     super = pygame.font.SysFont('Arial', 500)
     bruh = super.render('bruh', True, (0, 0, 0))
+    farck = super.render('farkel', True, (0, 0, 0))
     returne=button("return",300,600,200,40,(100,100,100),(100,100,200))
     drop=button("roll",300,650,200,40,(100,100,100),(100,100,200))
     keep=button("keep",300,700,200,40,(100,100,100),(100,100,200))
     rand=trandom.alternate_random(0,5)
     cscore=0
+    ftic=0
     while True:
         events=pygame.event.get()
         win.fill((255, 255, 255)) # Clear screen
@@ -181,14 +189,31 @@ def dice_main(win,username,password,file:helper.csv_file):
         returne.draw(win)
         drop.draw(win)
         keep.draw(win)
-        if tic>-1:
+        if tic!=-1:
             for x in face:
-                x.costume(next(rand))
+                if x.stored_data():
+                    x.costume(next(rand))
             tic-=1
-        elif tic==0:
-            
-            print(score(x.get_costume() for x in face))
-        else:
+        if tic==0:
+            scoreing=[]
+            for x in face:
+                if x.stored_data():
+                    scoreing.append(x.get_costume())
+            roll_val=score(scoreing)
+            print(roll_val)
+            if roll_val[0]==0:
+                cscore=0
+                ftic=100
+            for x in roll_val[1]:
+                for y in face:
+                    if y.get_costume()==x and y.stored_data():
+                        y.change_data(False)
+                        y.move(60,0)
+                        print(f"{y} removed, roll val {roll_val[1]} csotume {y.get_costume()}")
+        if ftic>0:
+            ftic-=1
+            win.blit(farck,(100,100))
+        if tic<-1:
             droped=False
         for event in events:
             if drop.is_clicked(event):
