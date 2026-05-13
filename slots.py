@@ -71,52 +71,51 @@ from button import button
 
 
 def weghted_random(l1,wheghts):
-   rand=trandom.alternate_random(1,1000000000)
-   random.seed(next(rand))
-   rnum=random.uniform(0,100)
-   pnum=0
-   for num,x in enumerate(wheghts):
-       if x>rnum>pnum:
-           return l1[num]
-       pnum=x
+    rand=trandom.alternate_random(1,1000000000)
+    random.seed(next(rand))
+    rnum=random.uniform(0,100)
+    pnum=0
+    for num,x in enumerate(wheghts):
+        if x>rnum>pnum:
+            return l1[num]
+        pnum=x
 
 
 class Sprite:
-   def __init__(self,win,path_to_images:Path,starting_image:int,x:float,y:float,size:tuple,data):
-       self.fPath=Path(path_to_images)
-       self.ims = [
-           pygame.transform.scale(pygame.image.load(str(f)).convert_alpha(),size)
-           for f in self.fPath.iterdir() if f.is_file()]      
-       self.cim=self.ims[starting_image]
-       self.costumee=starting_image
-       self.win=win
-       self.x=x
-       self.y=y
-       self.data=data
-   def render(self):
-       self.win.blit(self.cim, (self.x, self.y))
-   def move(self,x,y):
-       self.x+=x
-       self.y+=y
-   def teleport(self,x,y):
-       self.x=x
-       self.y=y
-   def costume(self,image:int):
-       self.costumee=image
-       self.cim=self.ims[image]
-   def get_pos(self,choise=""):
-       if choise=="":
-           return self.x,self.y
-       elif choise=="x":
-           return self.x
-       elif choise=="y":
-           return self.y
-   def stored_data(self):
-       return self.data
-   def change_data(self,new_data):
-       self.data=new_data
-   def get_costume(self):
-       return self.costumee
+    def __init__(self,win,path_to_images:Path,starting_image:int,x:float,y:float,size:tuple,data):
+        self.fPath = Path(path_to_images)
+        all_files = sorted([f for f in self.fPath.iterdir() if f.is_file()])
+        self.ims = [pygame.transform.scale(pygame.image.load(str(f)).convert_alpha(), size) for f in all_files]    
+        self.cim=self.ims[starting_image]
+        self.costumee=starting_image
+        self.win=win
+        self.x=x
+        self.y=y
+        self.data=data
+    def render(self):
+        self.win.blit(self.cim, (self.x, self.y))
+    def move(self,x,y):
+        self.x+=x
+        self.y+=y
+    def teleport(self,x,y):
+        self.x=x
+        self.y=y
+    def costume(self,image:int):
+        self.costumee=image
+        self.cim=self.ims[image]
+    def get_pos(self,choise=""):
+        if choise=="":
+            return self.x,self.y
+        elif choise=="x":
+            return self.x
+        elif choise=="y":
+            return self.y
+    def stored_data(self):
+        return self.data
+    def change_data(self,new_data):
+        self.data=new_data
+    def get_costume(self):
+        return self.costumee
 
 
 
@@ -165,8 +164,8 @@ def slots_main(win,username,password,file:helper.csv_file):
     costumes=[6,5,4,3,2,1,0]
     bet_slider=vertical_slider(3,win,[600,500],[500,450],[300,10])
     moneybox = pygame_widgets.textbox.TextBox(win, 1000, 100, 800, 80, fontSize=50,
-                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
-                  onSubmit=passing, radius=10, borderThickness=5)
+                borderColour=(255, 0, 0), textColour=(0, 200, 0),
+                onSubmit=passing, radius=10, borderThickness=5)
     super = pygame.font.SysFont('Arial', 500)
     bruh = super.render('bruh', True, (0, 0, 0))
     returne=button("return",300,600,200,40,(100,100,100),(100,100,200))
@@ -178,7 +177,7 @@ def slots_main(win,username,password,file:helper.csv_file):
         if spinning:
             if vol<10:
                 vol+=1
-           
+        
             for x in face:
                 for y in x:
                     tdata=y.stored_data()
@@ -288,7 +287,7 @@ def slots_main(win,username,password,file:helper.csv_file):
         # 4: Update display
         pygame.display.flip()
         Clock.tick(60)
-       
+    
 if __name__=="__main__":
     pygame.init()
     win=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

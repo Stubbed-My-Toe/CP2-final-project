@@ -140,11 +140,11 @@ def score(dice:list):
         if counts[num] == 3:
             score += 300 if num == 1 else num * 100
             removal.append(num)
-    if counts[1]<2:
+    if counts[1]<3:
         score += counts[1] * 100#1
     if counts[1]:
         removal.append(0)
-    if counts[5]<2:
+    if counts[5]<3:
         score += counts[5] * 50#5
     if counts[5]:
         removal.append(4)
@@ -180,6 +180,7 @@ def dice_main(win,username,password,file:helper.csv_file):
     rand=trandom.alternate_random(0,5)
     cscore=0
     ftic=0
+    tic=-1
     while True:
         events=pygame.event.get()
         win.fill((255, 255, 255)) # Clear screen
@@ -189,10 +190,11 @@ def dice_main(win,username,password,file:helper.csv_file):
         returne.draw(win)
         drop.draw(win)
         keep.draw(win)
-        if tic!=-1:
+        if tic>0:
             for x in face:
                 if x.stored_data():
                     x.costume(next(rand))
+                    print(x)
             tic-=1
         if tic==0:
             scoreing=[]
@@ -200,6 +202,7 @@ def dice_main(win,username,password,file:helper.csv_file):
                 if x.stored_data():
                     scoreing.append(x.get_costume())
             roll_val=score(scoreing)
+            print(scoreing)
             print(roll_val)
             if roll_val[0]==0:
                 cscore=0
@@ -210,10 +213,11 @@ def dice_main(win,username,password,file:helper.csv_file):
                         y.change_data(False)
                         y.move(60,0)
                         print(f"{y} removed, roll val {roll_val[1]} csotume {y.get_costume()}")
+            tic-=1
         if ftic>0:
             ftic-=1
             win.blit(farck,(100,100))
-        if tic<-1:
+        if tic>0:
             droped=False
         for event in events:
             if drop.is_clicked(event):
