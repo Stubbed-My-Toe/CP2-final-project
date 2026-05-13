@@ -1,5 +1,5 @@
 username,password,cash,times_played_blackjack,times_played_dice,times_played_plinko,times_played_slots
-test,<NULL>,178435,13,1,13,27
+test,<NULL>,178435,13,2,13,27
 allen,password,27,1,0,1,1
 allen,password,200,0,0,0,0
 liam,tuppy,76500,2,0,0,4
