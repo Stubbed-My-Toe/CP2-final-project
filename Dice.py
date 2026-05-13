@@ -162,12 +162,16 @@ def dice_main(win,username,password,file:helper.csv_file):
     moneybox = pygame_widgets.textbox.TextBox(win, 1000, 100, 800, 80, fontSize=50,
                   borderColour=(255, 0, 0), textColour=(0, 200, 0),
                   onSubmit=passing, radius=10, borderThickness=5)
+    scorebox = pygame_widgets.textbox.TextBox(win, 1000, 200, 800, 80, fontSize=50,
+                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
+                  onSubmit=passing, radius=10, borderThickness=5)
     super = pygame.font.SysFont('Arial', 500)
     bruh = super.render('bruh', True, (0, 0, 0))
     returne=button("return",300,600,200,40,(100,100,100),(100,100,200))
     drop=button("roll",300,650,200,40,(100,100,100),(100,100,200))
     keep=button("keep",300,700,200,40,(100,100,100),(100,100,200))
     rand=trandom.alternate_random(0,5)
+    cscore=0
     while True:
         events=pygame.event.get()
         win.fill((255, 255, 255)) # Clear screen
@@ -177,24 +181,33 @@ def dice_main(win,username,password,file:helper.csv_file):
         returne.draw(win)
         drop.draw(win)
         keep.draw(win)
-        if tic>=0:
+        if tic>-1:
             for x in face:
                 x.costume(next(rand))
             tic-=1
+        elif tic==0:
+            
+            print(score(x.get_costume() for x in face))
+        else:
+            droped=False
         for event in events:
             if drop.is_clicked(event):
                 if tic<0:
                     tic=30
+                    droped=True
             if keep.is_clicked(event):
                 pass 
             if returne.is_clicked(event):
                 file.update_row(
                         {"username": username, "password": password}, 
-                        {"cash": cash,"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":data["times_played_dice"],"times_played_plinko":data["times_played_plinko"],"times_played_slots":int(data["times_played_slots"])+1,}
+                        {"cash": cash,"times_played_blackjack":data["times_played_blackjack"],"times_played_dice":int(data["times_played_dice"])+1,"times_played_plinko":data["times_played_plinko"],"times_played_slots":data["times_played_slots"],}
                     )
                 bet_slider.kill()
+                del scorebox
                 del moneybox
                 return
+        moneybox.setText(f"money: {data["cash"]}")
+        scorebox.setText(f"score: {cscore}")
         pygame_widgets.update(events)
         # 4: Update display
         pygame.display.flip()
