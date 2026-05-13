@@ -155,7 +155,8 @@ class Game:
 
     def hand_str(self, hand):
         return "  ".join(short_name(c) for c in hand)
-
+    def max(self):
+        self.bet = self.cash
 
 # helper to draw text
 def write(text, f, color, x, y,screen):
@@ -205,6 +206,7 @@ def bj_main(screen,username,password,file:helper.csv_file):
         if game.state in ("menu", "result"):
             btn_deal     = button("DEAL", 20, 100,screen, 120, 38, (0, 120, 0))
             btn_bet_up   = button("+$5",  350, 48,screen, 80, 32)
+            allin   = button("ALL IN",  620, 48,screen, 80, 32)
             btn_bet_down = button("-$5",  440, 48,screen, 80, 32)
             returner= button("return",530,48,screen,80,32)
 
@@ -249,6 +251,8 @@ def bj_main(screen,username,password,file:helper.csv_file):
                     game.hit()
                 if btn_stand and btn_stand.collidepoint(mx, my):
                     game.stand()
+                if allin and allin.collidepoint(mx,my):
+                    game.max()
                 if returner and returner.collidepoint(mx,my):
                     stats = game.data 
                     file.update_row(

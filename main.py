@@ -48,6 +48,18 @@ def makeer(file:helper.csv_file,user,passer):
     if len(user)>0 or len(passer)>0:
         file.add([user,passer,200,0,0,0,0])
         data=data=helper.csv_get_data(file,{"username":user,"password":passer})
+def login_or_create(file, user, passer):
+    global data
+    data = helper.csv_get_data(file, {"username": user, "password": passer})
+    if data:
+        return
+    existing = helper.csv_get_data(file, {"username": user})
+    if existing:
+        data = None
+        return
+    if len(user) > 0 and len(passer) > 0:
+        file.add([user, passer, 200, 0, 0, 0, 0])
+        data = helper.csv_get_data(file, {"username": user, "password": passer})
 def main():
     global data
     pygame.init()
@@ -76,7 +88,7 @@ def main():
             if return_button.is_clicked(event):
                 quit()
             if make_acount.is_clicked(event):
-                makeer(file,usernameb.getText(),passwordb.getText())
+                login_or_create(file,usernameb.getText(),passwordb.getText())
                 tic=20
             try:
                 if data["username"]=="test" and data["password"]=="<>":
