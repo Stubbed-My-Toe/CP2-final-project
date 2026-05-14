@@ -44,8 +44,8 @@ def mines_main(win, username, password, file: helper_1.csv_file):
 
     bet_bar    = T.BetBar(CX, H - 120, min_bet=1, default=10, step=5)
     mine_slider_val = [3]   # mutable box
-    btn_plus_m  = T.Button("+", (CX + 130, H - 200, 36, 36), font_size=18)
-    btn_minus_m = T.Button("-", (CX + 88,  H - 150, 36, 36), font_size=18)
+    btn_plus_m  = T.Button("+", (CX + 130, H - 160, 36, 36), font_size=18)
+    btn_minus_m = T.Button("-", (CX + 88,  H - 160, 36, 36), font_size=18)
 
 
     btn_start   = T.Button("Start Game", (CX - 80, H - 68, 160, 44),
@@ -214,7 +214,7 @@ def mines_main(win, username, password, file: helper_1.csv_file):
         if state == "betting":
             bet_bar.draw(win)
             T.draw_text(win, f"Mines: {mine_count}", 18, T.TEXT_DIM,
-                        CX + 60, H - 120, anchor="midleft")
+                        CX - 60, H - 130, anchor="midleft")
             btn_minus_m.draw(win)
             btn_plus_m.draw(win)
             btn_start.draw(win)

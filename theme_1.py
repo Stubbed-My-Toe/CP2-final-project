@@ -140,7 +140,7 @@ class Button:
 
 
 # ─── Back-to-menu button ──────────────────────────────────────────────────────
-def make_back_button(x=20, y=20):
+def make_back_button(x=20, y=50):
     return Button("Main Menu", (x, y, 130, 38),
                   color=PANEL_LITE, hover_color=LOSE_RED,
                   hover_text=WHITE, font_size=16)
