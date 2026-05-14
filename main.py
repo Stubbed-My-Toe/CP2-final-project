@@ -226,7 +226,10 @@ def main_menu(win, data, csv_file):
 
 def main():
     pygame.init()
-    pygame.mixer.init()
+    try:
+        pygame.mixer.init()
+    except:
+        pass
     win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     pygame.display.set_caption("Cleek Casino")
 

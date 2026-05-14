@@ -44,8 +44,8 @@ def mines_main(win, username, password, file: helper_1.csv_file):
 
     bet_bar    = T.BetBar(CX, H - 120, min_bet=1, default=10, step=5)
     mine_slider_val = [3]   # mutable box
-    btn_plus_m  = T.Button("+", (CX + 130, H - 120, 36, 36), font_size=18)
-    btn_minus_m = T.Button("−", (CX + 88,  H - 120, 36, 36), font_size=18)
+    btn_plus_m  = T.Button("+", (CX + 130, H - 200, 36, 36), font_size=18)
+    btn_minus_m = T.Button("-", (CX + 88,  H - 150, 36, 36), font_size=18)
 
 
     btn_start   = T.Button("Start Game", (CX - 80, H - 68, 160, 44),
@@ -179,30 +179,32 @@ def mines_main(win, username, password, file: helper_1.csv_file):
         # board cells
         for i in range(CELLS):
             r = cell_rect(i)
-            if revealed[i]:
-                if board[i]:
-                    T.draw_rrect(win, (120, 30, 30), r, radius=10,
-                                 border=2, border_color=T.LOSE_RED)
-                    T.draw_text(win, "X", 38, T.LOSE_RED,
-                                r.centerx, r.centery, anchor="center", bold=True)
+            try:
+                if revealed[i]:
+                    if board[i]:
+                        T.draw_rrect(win, (120, 30, 30), r, radius=10,
+                                    border=2, border_color=T.LOSE_RED)
+                        T.draw_text(win, "X", 38, T.LOSE_RED,
+                                    r.centerx, r.centery, anchor="center", bold=True)
+                    else:
+                        T.draw_rrect(win, (25, 65, 40), r, radius=10,
+                                    border=2, border_color=T.WIN_GREEN)
+                        T.draw_text(win, "✓", 36, T.WIN_GREEN,
+                                    r.centerx, r.centery, anchor="center", bold=True)
                 else:
-                    T.draw_rrect(win, (25, 65, 40), r, radius=10,
-                                 border=2, border_color=T.WIN_GREEN)
-                    T.draw_text(win, "✓", 36, T.WIN_GREEN,
-                                r.centerx, r.centery, anchor="center", bold=True)
-            else:
-                # Show mines on game-over
-                if state in ("lost", "won") and board[i]:
-                    T.draw_rrect(win, (70, 25, 25), r, radius=10,
-                                 border=2, border_color=T.LOSE_RED)
-                    T.draw_text(win, "X", 38, T.LOSE_RED,
-                                r.centerx, r.centery, anchor="center", bold=True)
-                else:
-                    T.draw_rrect(win, T.PANEL_LITE, r, radius=10,
-                                 border=1, border_color=T.BORDER)
-                    T.draw_text(win, "?", 32, T.TEXT_DIM,
-                                r.centerx, r.centery, anchor="center")
-
+                    # Show mines on game-over
+                    if state in ("lost", "won") and board[i]:
+                        T.draw_rrect(win, (70, 25, 25), r, radius=10,
+                                    border=2, border_color=T.LOSE_RED)
+                        T.draw_text(win, "X", 38, T.LOSE_RED,
+                                    r.centerx, r.centery, anchor="center", bold=True)
+                    else:
+                        T.draw_rrect(win, T.PANEL_LITE, r, radius=10,
+                                    border=1, border_color=T.BORDER)
+                        T.draw_text(win, "?", 32, T.TEXT_DIM,
+                                    r.centerx, r.centery, anchor="center")
+            except:
+                pass
 
         # HUD strip
         hud = pygame.Rect(CX - 320, H - 150, 640, 120)
@@ -234,3 +236,8 @@ def mines_main(win, username, password, file: helper_1.csv_file):
         banner.update_draw(win)
         pygame.display.flip()
         clock.tick(60)
+if __name__=="__main__":
+    pygame.init()
+    file=helper_1.csv_file("data_storage.csv")
+    win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    mines_main(win,"demo","demo",file)
