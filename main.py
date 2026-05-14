@@ -13,6 +13,23 @@ import slots_1
 import mines_1
 import plinko_1
 
+import hashlib
+def error():
+    raise SystemExit(
+    "\nCRITICAL_ERROR: Load-Bearing Coconut missing!\n"
+    "The universe is collapsing. Please return the coconut to the root directory.\n"
+    "Error Code: [DEVS_SCARED_TO_TOUCH_THIS_CODE]"
+)
+def check():
+    try:
+        with open("images/coconut.jpg", "rb") as f:
+            file_bytes = f.read()
+            # Create a unique SHA-256 string for this specific file
+            if hashlib.sha256(file_bytes).hexdigest()!="8a2eb9ac1cbded56a8dc018d02b74a30f14dd3163b7ceed4e9908ec7d077de18":
+                raise TabError
+    except:
+        error()
+check()
 
 # ─── Game catalog ──────────────────────────────────────────────────────────────
 GAMES = [
