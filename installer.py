@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import os
-import helper
+import helper_1
 
 def in_main():
     # 1. Install requirements

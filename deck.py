@@ -1,3 +1,4 @@
+#Liam
 #import random
 #make class called deck
 #init func with bool input of joker
@@ -6,30 +7,27 @@
 #make len func to return length of deck
 # make iter func thta returns the deck
 import random
-import trandom
 class deck:
     def __init__(self,joker):
         """joker is a bool, true will add jokers and false will not"""
         self.joker=joker
-        self.rand=trandom.alternate_random(1,100000000)
         self.shuffle()
-        
     def shuffle(self):
         """shuffles the deck"""
         self.deck=['2 of Hearts', '3 of Hearts', '4 of Hearts', '5 of Hearts', '6 of Hearts', '7 of Hearts', '8 of Hearts', '9 of Hearts', '10 of Hearts', 'Jack of Hearts', 'Queen of Hearts', 'King of Hearts', 'Ace of Hearts', '2 of Diamonds', '3 of Diamonds', '4 of Diamonds', '5 of Diamonds', '6 of Diamonds', '7 of Diamonds', '8 of Diamonds', '9 of Diamonds', '10 of Diamonds', 'Jack of Diamonds', 'Queen of Diamonds', 'King of Diamonds', 'Ace of Diamonds', '2 of Clubs', '3 of Clubs', '4 of Clubs', '5 of Clubs', '6 of Clubs', '7 of Clubs', '8 of Clubs', '9 of Clubs', '10 of Clubs', 'Jack of Clubs', 'Queen of Clubs', 'King of Clubs', 'Ace of Clubs', '2 of Spades', '3 of Spades', '4 of Spades', '5 of Spades', '6 of Spades', '7 of Spades', '8 of Spades', '9 of Spades', '10 of Spades', 'Jack of Spades', 'Queen of Spades', 'King of Spades', 'Ace of Spades']
         if self.joker:
             self.deck.append("joker")
             self.deck.append("joker")
-        random.seed(next(self.rand))
         random.shuffle(self.deck)
     def draw_card(self,aceval=1,jackval=11,queenval=12,kingval=13,jokerval=14):
         """returns a card from the deck and removes it
         if there is no card in the deck it will shuffle the deck then return a card and its val"""
+        if not self.deck:
+            self.shuffle()
         shuffled=False
         if not self.deck:
             self.shuffle()
             shuffled=True
-        random.seed(next(self.rand))
         card=self.deck.pop(random.randint(0,len(self.deck)-1))
         if "Ace" in card:
             val = aceval
@@ -71,6 +69,7 @@ class deck:
         elif "Club" in card:
             sute="Club"
             color="black"
+        return card,val,sute,color
         return card,val,sute,color,shuffled
     def __len__(self):
         return len(self.deck)
@@ -80,7 +79,11 @@ class deck:
 #example on how to use:
 if "__main__"==__name__:
     bjdeck=deck(False)
+
+    for x in range(3):
+        card,val,sute,color=bjdeck.draw_card()
+        print(f"the card is {card}\nthe value is {val}\nthe suite is {sute}\nthe color is {color}")
+
     for x in range(54):
         card,val,sute,color,shuffled=bjdeck.draw_card()
         print(f"it was shuffeld{shuffled}")
-    

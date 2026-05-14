@@ -6,7 +6,7 @@ Written and typed by Chronin7
 
 2. you need to click the play button to right corner
 
-3. to exit just click save and quit
+3. to exit just
 ***
 ## License
 No copyright.
@@ -21,6 +21,4 @@ BG2bg2bg2
 Chronin7
 
 Stubbed-My-Toe
-
-Yourinthemood
 ***
