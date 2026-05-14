@@ -1,6 +1,3 @@
-username,password,cash,times_played_blackjack,times_played_dice,times_played_plinko,times_played_slots
-bob1,<>,107650,0,0,13,21
-bob2,<>,1,0,0,0,0
-B,d,200,0,0,2,2
-B,d,200,0,0,0,0
-B,d,200,0,0,0,0
+username,password,cash,times_played_blackjack,times_played_dice,times_played_plinko,times_played_slots,times_played_mines
+demo,demo,1000,0,0,0,0,0
+Bg2,Hi,3487.659999999999,1,1,0,1,0

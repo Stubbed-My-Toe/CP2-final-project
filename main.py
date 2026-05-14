@@ -1,153 +1,239 @@
-#from all files import all
-
-#display 3 buttons
-    #one to start the game to send to login screen
-    #one to have a help button
-    #one to exit the game
+# main.py — Cleek Casino  (entry point)
+import sys
 import pygame
-import csv
-import button
-import Dice
-#import Blackjack
-import helper
-import slots
-import mines
-import plinko
-import slider_screen
-import cards
-import deck
-import installer
-import hashlib
-import Pygame_file
-import pygame_widgets
-import time
-def error():
-    raise SystemExit(
-    "\nCRITICAL_ERROR: Load-Bearing Coconut missing!\n"
-    "The universe is collapsing. Please return the coconut to the root directory.\n"
-    "Error Code: [DEVS_SCARED_TO_TOUCH_THIS_CODE]"
-)
-def check():
-    try:
-        with open("images/coconut.jpg", "rb") as f:
-            file_bytes = f.read()
-            # Create a unique SHA-256 string for this specific file
-            if hashlib.sha256(file_bytes).hexdigest()!="8a2eb9ac1cbded56a8dc018d02b74a30f14dd3163b7ceed4e9908ec7d077de18":
-                raise TabError
-    except:
-        error()
-     
-# Example: store this string once, then check other images against it
-def checker(file,user,passer):
-    global data
-    try:
-        data=helper.csv_get_data(file,{"username":user.getText(),"password":passer.getText()})
-    except:
-        makeer(file,user.getText(),passer.getText())
-def makeer(file:helper.csv_file,user,passer):
-    global data
-    if len(user)>0 or len(passer)>0:
-        file.add([user,passer,200,0,0,0,0])
-        data=data=helper.csv_get_data(file,{"username":user,"password":passer})
-def main():
-    global data
-    pygame.init()
-    data=None
-    win=pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-    check()
-    file=helper.csv_file("data_storage.csv")
-    usernameb = pygame_widgets.textbox.TextBox(win, 100, 100, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="username")
-    passwordb = pygame_widgets.textbox.TextBox(win, 100, 160, 300, 50, fontSize=30,borderColour=(0, 0, 255), textColour=(0, 0, 0),placeholderText="password")
-    passwordb.isPassword = True
-    make_acount=button.button("login/make account",30,250,300,50,(100,100,100),(100,100,200))
-    return_button=button.button("save and quit",30,30,300,50,(100,100,100),(100,100,200))
-    dice_btn=button.button("dice (WIP)",30,90,300,50,(100,100,100),(100,100,200))
-    slots_btn=button.button("slots",30,150,300,50,(100,100,100),(100,100,200))
-    black_jack=button.button("blackjack",30,210,300,50,(100,100,100),(100,100,200))
-    plinko_btn=button.button("plinko",30,270,300,50,(100,100,100),(100,100,200))
-    mines_btn=button.button("mines (WIP)",30,330,300,50,(100,100,100),(100,100,200))
-    clock=pygame.time.Clock()
-    moneybox = pygame_widgets.textbox.TextBox(win, 500, 100, 800, 80, fontSize=50,
-                  borderColour=(255, 0, 0), textColour=(0, 200, 0),
-                  onSubmit=plinko.passing, radius=10, borderThickness=5)
-    while True:
-        win.fill((255, 255, 255))
-        events=pygame.event.get()
-        for event in events:
-            if return_button.is_clicked(event):
-                quit()
-            if make_acount.is_clicked(event):
-                makeer(file,usernameb.getText(),passwordb.getText())
-                tic=20
-            try:
-                if data["username"]=="test" and data["password"]=="<>":
-                    casher=button.button("add cash",30,390,300,50,(100,100,100),(100,100,200))
-                    casherer=button.button("minus cash cash",30,390,300,50,(100,100,100),(100,100,200))
-            except:
-                pass
-        if data==None:
-            make_acount.draw(win)
-            pass
-        else:
-            tic-=1
-            if data=="bad":
-                data=None
-                continue
-            elif tic<0:
-                moneybox.setText(f"money: {data["cash"]}")
-                dice_btn.draw(win)
-                slots_btn.draw(win)
-                black_jack.draw(win)
-                plinko_btn.draw(win)
-                mines_btn.draw(win)
-                usernameb.hide()
-                passwordb.hide()
-                if data["username"]=="test" and data["password"]=="<>":
-                    casher.draw(win)
-                    casherer.draw(win)
-                for event in events:
-                    if dice_btn.is_clicked(event):
-                        moneybox.hide()
-                        pass #dice main
-                    if slots_btn.is_clicked(event):
-                        moneybox.hide()
-                        slots.slots_main(win,data["username"],data["password"],file)
-                    if black_jack.is_clicked(event):
-                        moneybox.hide()
-                        Blackjack.bj_main(win,data["username"],data["password"],file)
-                    if plinko_btn.is_clicked(event):
-                        moneybox.hide()
-                        plinko.plinko_main(win,data["username"],data["password"],file)
-                    if mines_btn.is_clicked(event):
-                        moneybox.hide()
-                        pass
-                    moneybox.show()
-                    if data["username"]=="test" and data["password"]=="<>":
-                        if casherer.is_clicked(event):
-                            pass
+import math
 
-        pygame_widgets.update(events)
-                
-            
-        return_button.draw(win)
-        pygame.display.update()
+
+import helper_1
+import auth_1
+import theme_1 as T
+import Blackjack_3
+import Dice_1
+import slots_1
+import mines_1
+import plinko_1
+
+
+# ─── Game catalog ──────────────────────────────────────────────────────────────
+GAMES = [
+    {
+        "name":    "Blackjack",
+        "icon":    "♠",
+        "desc":    "Beat the dealer to 21",
+        "call":    Blackjack_3.blackjack_main,
+        "color":   T.ACCENT,
+    },
+    {
+        "name":    "Dice",
+        "icon":    "⬡",
+        "desc":    "Over / Under 0–100",
+        "call":    Dice_1.dice_main,
+        "color":   (100, 160, 240),
+    },
+    {
+        "name":    "Slots",
+        "icon":    "7",
+        "desc":    "Match the centre row",
+        "call":    slots_1.slots_main,
+        "color":   T.GOLD,
+    },
+    {
+        "name":    "Mines",
+        "icon":    "✕",
+        "desc":    "Dodge the mines — cash out",
+        "call":    mines_1.mines_main,
+        "color":   T.LOSE_RED,
+    },
+    {
+        "name":    "Plinko",
+        "icon":    "◉",
+        "desc":    "Drop a chip — win big",
+        "call":    plinko_1.plinko_main,
+        "color":   T.ACCENT_DIM,
+    },
+]
+
+
+CARD_W, CARD_H = 220, 280
+CARD_GAP = 28
+
+
+
+
+def _card_rect(i, n, cx, cy):
+    total = n * CARD_W + (n - 1) * CARD_GAP
+    x = cx - total // 2 + i * (CARD_W + CARD_GAP)
+    return pygame.Rect(x, cy - CARD_H // 2, CARD_W, CARD_H)
+
+
+
+
+def _hovered_card(pos, n, cx, cy):
+    for i in range(n):
+        if _card_rect(i, n, cx, cy).collidepoint(pos):
+            return i
+    return -1
+
+
+
+
+def main_menu(win, data, csv_file):
+    W, H  = win.get_size()
+    CX    = W // 2
+    cy    = H // 2 + 20
+
+
+    btn_quit = T.Button("Sign Out", (W - 160, H - 52, 130, 38),
+                        color=T.PANEL_LITE, hover_color=T.LOSE_RED,
+                        hover_text=T.WHITE, font_size=15)
+    banner = T.Banner()
+
+
+    hover_idx = -1
+    hover_lift = [0.0] * len(GAMES)   # vertical lift animation per card
+
+
+    clock = pygame.time.Clock()
+    running = True
+    while running:
+        cash = float(helper_1.csv_get_data(csv_file,
+                    {"username": data["username"],
+                     "password": data["password"]})["cash"])
+
+
+        events = pygame.event.get()
+        for e in events:
+            if e.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+
+            if btn_quit.is_clicked(e):
+                return "logout"
+
+
+            if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                pos = e.pos
+                idx = _hovered_card(pos, len(GAMES), CX, cy)
+                if idx >= 0:
+                    game = GAMES[idx]
+                    game["call"](win, data["username"], data["password"], csv_file)
+                    # refresh data after returning
+                    data = helper_1.csv_get_data(csv_file,
+                               {"username": data["username"],
+                                "password": data["password"]})
+
+
+        # ── Hover animation ───────────────────────────────────────────────────
+        mx, my = pygame.mouse.get_pos()
+        hover_idx = _hovered_card((mx, my), len(GAMES), CX, cy)
+        for i in range(len(GAMES)):
+            target = 18.0 if i == hover_idx else 0.0
+            hover_lift[i] += (target - hover_lift[i]) * 0.14
+
+
+        # ── Draw ──────────────────────────────────────────────────────────────
+        win.fill(T.BG)
+        # animated diagonal grid
+        t = pygame.time.get_ticks() / 5000
+        for k in range(-H, W + H, 64):
+            alpha = 18
+            pygame.draw.line(win, (20, 25, 30), (k, 0), (k + H, H), 1)
+
+
+        T.draw_logo_corner(win)
+        T.draw_hud(win, cash, data["username"])
+        btn_quit.draw(win)
+
+
+        # headline
+        T.draw_text(win, "Choose a Game", 38, T.TEXT, CX, 68, anchor="midtop", bold=True)
+        T.draw_text(win, "Your balance carries across all games", 17, T.TEXT_DIM,
+                    CX, 116, anchor="midtop")
+
+
+        # game cards
+        for i, game in enumerate(GAMES):
+            lift = int(hover_lift[i])
+            r    = _card_rect(i, len(GAMES), CX, cy)
+            r.y -= lift
+
+
+            hov  = (i == hover_idx)
+            bg   = T.PANEL_LITE if not hov else T.PANEL
+            border_col = game["color"] if hov else T.BORDER
+
+
+            T.draw_rrect(win, bg, r, radius=16, border=2, border_color=border_col)
+
+
+            # glow on hover
+            if hov:
+                glow = pygame.Surface((CARD_W + 20, CARD_H + 20), pygame.SRCALPHA)
+                gc   = game["color"]
+                pygame.draw.rect(glow, (*gc, 25),
+                                 (0, 0, CARD_W + 20, CARD_H + 20), border_radius=20)
+                win.blit(glow, (r.x - 10, r.y - 10))
+
+
+            # big icon
+            T.draw_text(win, game["icon"], 72, game["color"],
+                        r.centerx, r.y + 70, anchor="midtop")
+
+
+            # name
+            T.draw_text(win, game["name"], 24, T.TEXT,
+                        r.centerx, r.y + 160, anchor="midtop", bold=True)
+
+
+            # description
+            T.draw_text(win, game["desc"], 14, T.TEXT_DIM,
+                        r.centerx, r.y + 194, anchor="midtop")
+
+
+            # play button
+            pb = pygame.Rect(r.x + 20, r.bottom - 50, CARD_W - 40, 36)
+            col = game["color"] if hov else T.BORDER
+            T.draw_rrect(win, col if hov else T.PANEL, pb, radius=8,
+                         border=1, border_color=col)
+            T.draw_text(win, "Play", 15, T.BG if hov else T.TEXT_DIM,
+                        pb.centerx, pb.centery, anchor="center", bold=hov)
+
+
+        banner.update_draw(win)
+        pygame.display.flip()
         clock.tick(60)
+
+
+
+
+def main():
+    pygame.init()
+    pygame.mixer.init()
+    win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    pygame.display.set_caption("Cleek Casino")
+
+
+    csv_file = helper_1.csv_file("data_storage.csv")
+
+
+    while True:
+        data = auth_1.login_screen(win, csv_file)
+        if data is None:
+            break
+
+
+        result = main_menu(win, data, csv_file)
+        if result == "logout":
+            continue
+        break
+
+
     pygame.quit()
     sys.exit()
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
