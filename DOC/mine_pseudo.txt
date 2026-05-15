@@ -16,4 +16,5 @@
        #When bomb input and bet is put in, put that many mines on the field as blank tiles randomly, and the multipliers as blank tiles as well. 
         #have users click tiles, if safe, turn tile blue, and increase multiplier. 
         #if tile turns red, it's a bomb, and it will say game over, end the game
+
         #The Game resets and is playable again and the player can choose to go back home or play different games on the side bar
